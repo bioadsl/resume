@@ -225,8 +225,8 @@
       els.aboutSummary.textContent = 'Cultura Shift-Left & Qualidade Contínua';
     }
     if (els.aboutSummaryText && about.summary) {
-      const trimmed = about.summary.length > 140
-        ? about.summary.substring(0, 140) + '...'
+      const trimmed = about.summary.length > 155
+        ? about.summary.substring(0, 155) + '...'
         : about.summary;
       els.aboutSummaryText.textContent = trimmed;
     }
