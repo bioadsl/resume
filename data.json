@@ -111,45 +111,66 @@
   ],
   "projects": [
     {
-      "title": "Test Automation Framework - Cypress",
-      "description": "Framework completo de automação E2E com Cypress, implementando BDD com Cucumber, relatórios com Allure, integração com GitHub Actions e boas práticas de Page Object Model.",
-      "tags": ["Cypress", "Cucumber", "JavaScript", "CI/CD", "GitHub Actions"],
-      "github": "https://github.com/bioadsl/cypress-automation-framework",
-      "icon": "🌐"
+      "title": "RethinkBank - Testes Automatizados E2E",
+      "description": "Suíte completa de automação de testes E2E para sistema bancário digital RethinkBank, cobrindo fluxos críticos de transações, abertura de contas e validação de operações financeiras.",
+      "tags": ["Selenium", "Cucumber", "Java", "BDD", "Banking"],
+      "github": "https://github.com/bioadsl/rethinkbank-tests",
+      "icon": "�"
     },
     {
-      "title": "Playwright API Testing Suite",
-      "description": "Suíte completa de testes automatizados de APIs REST usando Playwright, com validação de contratos, schemas com ZOD, geração de massa de dados dinâmica e relatórios avançados.",
-      "tags": ["Playwright", "API Testing", "TypeScript", "ZOD", "REST"],
-      "github": "https://github.com/bioadsl/playwright-api-testing",
+      "title": "Trello API - Testes Automatizados",
+      "description": "Projeto de automação de testes de API REST para a plataforma Trello, validando autenticação, CRUD de boards, lists e cards, com asserts de contrato e status code.",
+      "tags": ["API Testing", "REST Assured", "Java", "Postman", "JSON Schema"],
+      "github": "https://github.com/bioadsl/trello-api-tests",
       "icon": "🔌"
     },
     {
-      "title": "Robot Framework - Web & Mobile",
-      "description": "Framework híbrido com Robot Framework para automação de testes Web e Mobile (Appium), com keywords reutilizáveis, integração com Selenium e execução paralela.",
-      "tags": ["Robot Framework", "Selenium", "Appium", "Python", "BDD"],
-      "github": "https://github.com/bioadsl/robot-hybrid-framework",
-      "icon": "🤖"
+      "title": "Automação Front-End - Framework Web",
+      "description": "Framework robusto de automação de testes de interface web com padrão Page Object Model, esperas explícitas, manipulação de iframes e relatórios de execução detalhados.",
+      "tags": ["Selenium WebDriver", "Cypress", "JavaScript", "POM", "E2E"],
+      "github": "https://github.com/bioadsl/test_frontend",
+      "icon": "🎨"
     },
     {
-      "title": "Performance Testing Suite - JMeter",
-      "description": "Estrutura de testes de performance, carga e estresse com Apache JMeter, incluindo planos de testes distribuídos, monitoramento e relatórios com gráficos interativos.",
-      "tags": ["JMeter", "Performance", "Load Testing", "Docker", "Grafana"],
-      "github": "https://github.com/bioadsl/jmeter-performance-suite",
-      "icon": "⚡"
+      "title": "Automação Back-End - Testes de API",
+      "description": "Estrutura de testes automatizados para validação de microsserviços e APIs REST/SOAP, incluindo testes de integração, performance e verificação de payloads.",
+      "tags": ["REST Assured", "Postman", "Newman", "API Testing", "Java"],
+      "github": "https://github.com/bioadsl/test_backend",
+      "icon": "⚙️"
     },
     {
-      "title": "Selenium Java BDD Framework",
-      "description": "Framework de automação Web com Selenium WebDriver em Java, usando BDD (Cucumber), Page Factory, design patterns e integração com Jenkins e SonarQube.",
-      "tags": ["Selenium", "Java", "Cucumber", "JUnit", "Jenkins"],
-      "github": "https://github.com/bioadsl/selenium-java-bdd",
-      "icon": "☕"
+      "title": "Modelo Cucumber - Template BDD",
+      "description": "Template reutilizável de projeto BDD com Cucumber para inicialização rápida de suítes de automação, configurado com hooks, steps reutilizáveis e relatórios formatados.",
+      "tags": ["Cucumber", "BDD", "Gherkin", "Java", "Template"],
+      "github": "https://github.com/bioadsl/modelo-cucumber",
+      "icon": "📋"
     },
     {
-      "title": "QA Quality Dashboard",
-      "description": "Dashboard analítico para visualização de métricas de qualidade, cobertura de testes, tracking de defeitos e indicadores ágeis construído com HTML/CSS/JS puro.",
-      "tags": ["JavaScript", "CSS Grid", "Analytics", "Metrics", "DataViz"],
-      "github": "https://github.com/bioadsl/qa-quality-dashboard",
+      "title": "Framework BDD - Gherkin & Automação",
+      "description": "Framework completo de Behavior Driven Development com cenários escritos em linguagem ubíqua (Gherkin), integrados a camadas de automação Web e API.",
+      "tags": ["BDD", "Gherkin", "Cucumber", "Ruby", "Capybara"],
+      "github": "https://github.com/bioadsl/bdd",
+      "icon": "🧪"
+    },
+    {
+      "title": "RethinkBank Test - QA Financeiro",
+      "description": "Projeto de QA dedicado a validações do domínio bancário RethinkBank, com cenários de regressão, testes negativos e simulação de transações financeiras sensíveis.",
+      "tags": ["QA Financeiro", "Regressão", "JUnit", "SQL", "Validação de Dados"],
+      "github": "https://github.com/bioadsl/rethinkbanktest",
+      "icon": "💳"
+    },
+    {
+      "title": "Banco QA - Testes de Sistema Bancário",
+      "description": "Suíte completa de testes para sistemas bancários legados, incluindo validações de batch COBOL, integração com mainframe e testes manuais estruturados.",
+      "tags": ["Testes Manuais", "COBOL", "Mainframe", "SQL", "IBM RQM"],
+      "github": "https://github.com/bioadsl/banco-qa",
+      "icon": "🏛️"
+    },
+    {
+      "title": "Cucumber Reports - Relatórios Java",
+      "description": "Implementação avançada de relatórios automatizados em projetos Java com Cucumber, incluindo dashboard com gráficos, métricas de cobertura e exportação de evidências.",
+      "tags": ["Cucumber", "Java", "Relatórios", "JUnit", "Maven"],
+      "github": "https://github.com/bioadsl/cucumber_reports_java",
       "icon": "📊"
     }
   ],
