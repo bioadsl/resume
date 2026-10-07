@@ -10,7 +10,7 @@
     "cvUrl": "./curriculo.pdf"
   },
   "about": {
-    "summary": "Analista de Testes Sênior e QA Automation Engineer com mais de 10 anos de sólida experiência em engenharia de qualidade de software, com forte atuação em liderança técnica e automação de testes funcionais e não-funcionais. Especialista na criação e manutenção de robustos Test Automation Frameworks utilizando Selenium, Cypress, Playwright, Katalon e Robot Framework para interfaces Web e Mobile. Amplo domínio em testes e validações de APIs REST/SOAP com ferramentas de mercado como Postman, Newman e RestAssured. Histórico de contribuição em sistemas de alta complexidade e missão crítica nos setores financeiro, de segurança pública e de telecomunicações. Profissional certificado ISTQB CTFL, engajado com a cultura Shift-left e metodologias ágeis (Scrum e Kanban) para acelerar a entrega contínua com qualidade."
+    "summary": "Analista de Testes Sênior e QA Automation Engineer com mais de 10 anos de sólida experiência em  qualidade de software."
   },
   "skills": {
     "categories": [
@@ -22,17 +22,17 @@
       {
         "name": "Frameworks de Automação",
         "icon": "⚙️",
-        "items": ["Selenium WebDriver", "Cypress", "Playwright", "Katalon Studio", "Robot Framework", "Cucumber", "Behave", "JUnit", "Capybara"]
+        "items": ["Selenium WebDriver", "Cypress", "Playwright", "Katalon Studio", "Robot Framework", "Cucumber", "Behave", "JUnit", "Capybara", "Rest Assured"]
       },
       {
         "name": "Testes de API",
         "icon": "🔗",
-        "items": ["Postman", "Newman", "RestAssured", "Swagger/OpenAPI", "SoapUI", "Karate DSL", "Apidog"]
+        "items": ["Postman", "Newman", "RestAssured", "Swagger/OpenAPI", "SoapUI", "Karate DSL", "ApiDog"]
       },
       {
         "name": "DevOps / CI-CD",
         "icon": "🚀",
-        "items": ["Git", "GitHub", "GitLab CI", "Jenkins", "SonarQube", "AWS", "Docker"]
+        "items": ["Git", "GitHub", "GitLab CI", "Jenkins", "SonarQube", "AWS", "Docker", "GitHub Actions"]
       },
       {
         "name": "Bancos de Dados",
@@ -42,12 +42,12 @@
       {
         "name": "Metodologias & Ferramentas",
         "icon": "📋",
-        "items": ["Scrum", "Kanban", "Shift-Left Testing", "ISTQB", "Jira", "Redmine", "TestLink", "QASE", "TFS", "IBM RQM", "RQM", "JMeter", "Graylog", "Mainframe", "Zephir", "LeanFT"]
+        "items": ["Scrum", "Kanban", "Shift-Left Testing", "ISTQB", "Jira", "Redmine", "TestLink", "QASE", "TFS", "RQM", "JMeter", "Graylog", "Zephir", "LeanFT", "Cucumber", "Capibara", "BDD", "Maven", "Gerkin"]
       },
       {
         "name": "Idiomas",
         "icon": "🌍",
-        "items": ["Português (Nativo)", "Inglês B2 (Intermediário)"]
+        "items": ["Português (Nativo)", "Inglês B2 (Intermediário)", "Espanhol B1 (Básico)"]
       }
     ]
   },
@@ -256,6 +256,12 @@
       "level": "B2 — Intermediário Avançado (Upper Intermediate)",
       "description": "Leitura e escrita técnica fluente, conversação intermediária, compreensão de documentação, specs e vídeos técnicos.",
       "icon": "🇬🇧"
+    },
+    {
+      "name": "Espanhol",
+      "level": "B1 — Básico (Intermediário)",
+      "description": "Leitura e compreensão de textos técnicos básicos, conversação cotidiana, compreensão de documentação e suporte em espanhol.",
+      "icon": "🇪🇸"
     }
   ],
   "certifications": [
