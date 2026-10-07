@@ -168,7 +168,9 @@
       "tags": ["API Testing", "REST Assured", "Java", "Postman", "JSON Schema"],
       "github": "https://github.com/bioadsl/trello-api-tests",
       "icon": "🔌",
-      "badges": []
+      "badges": [
+        {"type": "github-actions", "repo": "bioadsl/trello-api-tests", "label": "CI/CD", "color": "10b981"}
+      ]
     },
     {
       "title": "Automação Front-End - Framework Web",
