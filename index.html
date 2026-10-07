@@ -27,10 +27,17 @@
 
   <link rel="stylesheet" href="styles.css" />
 
-  <!-- PDF.js - Leitura de PDFs do LinkedIn (engine de parsing) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
-          integrity="sha512-veo479b10pJj79hE3Z9V7P4m1Q1oJzJxJqJZ8mPvU0tQ3u0QqQ7l5WzN5U2W4R3Y6H7Z6O4I3L5mT9C0qP1Q=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- PDF.js - Leitura de PDFs do LinkedIn (engine de parsing)
+       - CDN estável unpkg (fallback jsdelivr e cloudflare no script.js se este falhar)
+       - Worker obrigatório (separado, mesmo CDN) para processar páginas do PDF em background -->
+  <script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"
+          crossorigin="anonymous" referrerpolicy="no-referrer"
+          onerror="window.__pdfjsCdnFailed = true;"></script>
+  <script>
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+    }
+  </script>
 
   <title>Fabrício Duarte | QA Automation Engineer & Senior Test Analyst</title>
 </head>

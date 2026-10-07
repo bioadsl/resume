@@ -522,7 +522,10 @@
           p.setAttribute('hidden', '');
         }
       });
-      if (prevBtn) prevBtn.disabled = state.currentStep === 0;
+      if (prevBtn) {
+        prevBtn.disabled = state.currentStep === 0;
+        prevBtn.style.visibility = state.currentStep === 0 ? 'hidden' : 'visible';
+      }
       if (nextBtn) nextBtn.textContent = state.currentStep === stepperBtns.length - 1 ? 'Finalizar ✓' : 'Próximo →';
     }
 
@@ -1229,54 +1232,106 @@
       return null;
     }
 
+    // --------- PDF.js CDN Loader (fallback 3 hops: unpkg -> jsdelivr -> cdnjs) ---------
+    const PDFJS_SOURCES = [
+      { script: 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js', worker: 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js' },
+      { script: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js', worker: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js' },
+      { script: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', worker: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js' }
+    ];
+
+    function ensurePdfJsLoaded() {
+      return new Promise(function (resolve, reject) {
+        if (window['pdfjsLib'] && window['pdfjsLib'].getDocument) {
+          if (!window['pdfjsLib'].GlobalWorkerOptions.workerSrc) {
+            window['pdfjsLib'].GlobalWorkerOptions.workerSrc = PDFJS_SOURCES[0].worker;
+          }
+          return resolve(window['pdfjsLib']);
+        }
+        var trySource = function (idx) {
+          if (idx >= PDFJS_SOURCES.length) {
+            return reject(new Error(
+              'Não foi possível carregar o leitor de PDF (PDF.js) em nenhum dos 3 CDNs disponíveis (unpkg, jsdelivr, cdnjs). ' +
+              'Verifique sua conexão com a internet, desative bloqueadores de script/ADBlock e recarregue a página.'
+            ));
+          }
+          var src = PDFJS_SOURCES[idx];
+          var s = document.createElement('script');
+          s.src = src.script;
+          s.crossOrigin = 'anonymous';
+          s.referrerPolicy = 'no-referrer';
+          s.onerror = function () { trySource(idx + 1); };
+          s.onload = function () {
+            try {
+              if (window['pdfjsLib'] && window['pdfjsLib'].GlobalWorkerOptions) {
+                window['pdfjsLib'].GlobalWorkerOptions.workerSrc = src.worker;
+              }
+              resolve(window['pdfjsLib']);
+            } catch (err) {
+              trySource(idx + 1);
+            }
+          };
+          document.head.appendChild(s);
+        };
+        trySource(0);
+      });
+    }
+
     // --------- PDF extract text ---------
     function extractPdfText(file) {
-      return new Promise(function (resolve, reject) {
-        if (!window['pdfjsLib']) return reject(new Error('PDF.js não carregado. Verifique sua conexão com a internet e tente novamente.'));
-        // worker is bundled inline via CDN build v3 - no external worker.
-        var reader = new FileReader();
-        reader.onerror = function () { reject(new Error('Falha ao ler o arquivo selecionado. Tente novamente.')); };
-        reader.onload = function () {
-          var typedArray = new Uint8Array(reader.result);
-          window['pdfjsLib'].getDocument({ data: typedArray }).promise.then(function (pdf) {
-            setProgress(8, 'PDF carregado (' + pdf.numPages + ' páginas)...');
-            var pages = [];
-            for (var i = 1; i <= pdf.numPages; i++) pages.push(i);
-            var acc = [];
-            pages.reduce(function (prev, pNum, idx) {
-              return prev.then(function () {
-                return pdf.getPage(pNum).then(function (page) {
-                  setProgress(Math.round(8 + ((idx + 1) / pages.length) * 72), 'Processando página ' + pNum + ' / ' + pages.length + '...');
-                  return page.getTextContent({ normalizeWhitespace: true, disableCombineTextItems: false });
-                }).then(function (content) {
-                  var text = '';
-                  var lastY = null;
-                  content.items.forEach(function (item) {
-                    var transform = item.transform || [0, 0, 0, 0, 0, 0];
-                    var y = transform[5];
-                    if (lastY !== null && Math.abs(y - lastY) > 2) text += '\n';
-                    else if (lastY !== null) text += ' ';
-                    text += item.str || '';
-                    lastY = y;
+      return ensurePdfJsLoaded().catch(function (err) {
+        return Promise.reject(err);
+      }).then(function () {
+        return new Promise(function (resolve, reject) {
+          if (!window['pdfjsLib']) return reject(new Error('PDF.js não carregado. Verifique sua conexão com a internet e tente novamente.'));
+          var reader = new FileReader();
+          reader.onerror = function () { reject(new Error('Falha ao ler o arquivo selecionado. Tente novamente.')); };
+          reader.onload = function () {
+            var typedArray = new Uint8Array(reader.result);
+            var loadCfg = { data: typedArray };
+            // Força usar o worker carregado, evitando CORS em ambientes file://
+            if (window['pdfjsLib'] && window['pdfjsLib'].GlobalWorkerOptions && !window['pdfjsLib'].GlobalWorkerOptions.workerSrc) {
+              window['pdfjsLib'].GlobalWorkerOptions.workerSrc = PDFJS_SOURCES[0].worker;
+            }
+            window['pdfjsLib'].getDocument(loadCfg).promise.then(function (pdf) {
+              setProgress(8, 'PDF carregado (' + pdf.numPages + ' páginas)...');
+              var pages = [];
+              for (var i = 1; i <= pdf.numPages; i++) pages.push(i);
+              var acc = [];
+              pages.reduce(function (prev, pNum, idx) {
+                return prev.then(function () {
+                  return pdf.getPage(pNum).then(function (page) {
+                    setProgress(Math.round(8 + ((idx + 1) / pages.length) * 72), 'Processando página ' + pNum + ' / ' + pages.length + '...');
+                    return page.getTextContent({ normalizeWhitespace: true, disableCombineTextItems: false });
+                  }).then(function (content) {
+                    var text = '';
+                    var lastY = null;
+                    content.items.forEach(function (item) {
+                      var transform = item.transform || [0, 0, 0, 0, 0, 0];
+                      var y = transform[5];
+                      if (lastY !== null && Math.abs(y - lastY) > 2) text += '\n';
+                      else if (lastY !== null) text += ' ';
+                      text += item.str || '';
+                      lastY = y;
+                    });
+                    acc.push(text);
+                    return Promise.resolve();
                   });
-                  acc.push(text);
-                  return Promise.resolve();
                 });
+              }, Promise.resolve()).then(function () {
+                setProgress(84, 'Extração concluída. Analisando seções padrões do LinkedIn...');
+                hideProgress();
+                resolve(acc.join('\n'));
+              }).catch(function (err) {
+                hideProgress();
+                reject(new Error('Páginas ilegíveis. PDF pode estar protegido por senha ou corrompido. Detalhes: ' + (err.message || err)));
               });
-            }, Promise.resolve()).then(function () {
-              setProgress(84, 'Extração concluída. Analisando seções padrões do LinkedIn...');
-              hideProgress();
-              resolve(acc.join('\n'));
             }).catch(function (err) {
               hideProgress();
-              reject(new Error('Páginas ilegíveis. PDF pode estar protegido por senha ou corrompido. Detalhes: ' + (err.message || err)));
+              reject(new Error('Não foi possível abrir este PDF. Verifique se o arquivo não está protegido por senha (PDF criptografado não é suportado). Erro: ' + (err.message || err)));
             });
-          }).catch(function (err) {
-            hideProgress();
-            reject(new Error('Não foi possível abrir este PDF. Verifique se o arquivo não está protegido por senha (PDF criptografado não é suportado). Erro: ' + (err.message || err)));
-          });
-        };
-        reader.readAsArrayBuffer(file);
+          };
+          reader.readAsArrayBuffer(file);
+        });
       });
     }
 
@@ -1616,6 +1671,13 @@
 
     // --------- Wire UI ---------
     if (elsImport.input) {
+      elsImport.input.addEventListener('click', function () {
+        if (elsImport.panel) elsImport.panel.hidden = false;
+        if (elsImport.dropzone) elsImport.dropzone.hidden = false;
+        if (elsImport.review) elsImport.review.hidden = true;
+        clearError();
+        elsImport.dropzone && elsImport.dropzone.scrollIntoView && elsImport.dropzone.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      });
       elsImport.input.addEventListener('change', function (ev) {
         var file = ev.target.files && ev.target.files[0];
         handleFile(file);
