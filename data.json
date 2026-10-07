@@ -47,7 +47,7 @@
       {
         "name": "Idiomas",
         "icon": "🌍",
-        "items": ["Português (Nativo)", "Inglês B2 (Intermediário)", "Espanhol B1 (Básico)"]
+        "items": ["Português (Nativo)", "Inglês B2 (Intermediário)", "Espanhol A1 (Básico)"]
       }
     ]
   },
@@ -259,8 +259,8 @@
     },
     {
       "name": "Espanhol",
-      "level": "B1 — Básico (Intermediário)",
-      "description": "Leitura e compreensão de textos técnicos básicos, conversação cotidiana, compreensão de documentação e suporte em espanhol.",
+      "level": "A1 — Básico",
+      "description": "Compreensão e leitura básica de textos cotidianos, frases simples e vocabulário inicial para comunicação em espanhol.",
       "icon": "🇪🇸"
     }
   ],
