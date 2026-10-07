@@ -27,7 +27,7 @@
       {
         "name": "Testes de API",
         "icon": "🔗",
-        "items": ["Postman", "Newman", "RestAssured", "Swagger/OpenAPI", "SoapUI", "Karate DSL"]
+        "items": ["Postman", "Newman", "RestAssured", "Swagger/OpenAPI", "SoapUI", "Karate DSL", "Apidog"]
       },
       {
         "name": "DevOps / CI-CD",
@@ -42,7 +42,7 @@
       {
         "name": "Metodologias & Ferramentas",
         "icon": "📋",
-        "items": ["Scrum", "Kanban", "Shift-Left Testing", "ISTQB", "Jira", "TestLink", "QASE", "TFS", "IBM RQM", "RQM", "JMeter", "Graylog", "Mainframe", "Zephir", "LeanFT"]
+        "items": ["Scrum", "Kanban", "Shift-Left Testing", "ISTQB", "Jira", "Redmine", "TestLink", "QASE", "TFS", "IBM RQM", "RQM", "JMeter", "Graylog", "Mainframe", "Zephir", "LeanFT"]
       }
     ]
   },
