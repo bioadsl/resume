@@ -32,7 +32,7 @@
       {
         "name": "DevOps / CI-CD",
         "icon": "🚀",
-        "items": ["Git", "GitHub", "GitLab CI", "Jenkins", "SonarQube", "AWS", "Docker", "Quality Gates"]
+        "items": ["Git", "GitHub", "GitLab CI", "Jenkins", "SonarQube", "AWS", "Docker"]
       },
       {
         "name": "Bancos de Dados",
@@ -42,7 +42,7 @@
       {
         "name": "Metodologias & Ferramentas",
         "icon": "📋",
-        "items": ["Scrum", "Kanban", "Shift-Left Testing", "ISTQB", "Jira", "TestLink", "QASE", "TFS", "IBM RQM", "JMeter", "Graylog", "Mainframe"]
+        "items": ["Scrum", "Kanban", "Shift-Left Testing", "ISTQB", "Jira", "TestLink", "QASE", "TFS", "IBM RQM", "RQM", "JMeter", "Graylog", "Mainframe", "Zephir", "LeanFT"]
       }
     ]
   },
