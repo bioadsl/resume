@@ -1,0 +1,67 @@
+Fabrício Duarte
+Analista de Testes Sênior / QA Automation Engineer
+Distrito Federal, Brasil | fabricio.4135@gmail.com | Linkedin
+
+Resumo Profissional
+Analista de Testes Sênior e QA Automation Engineer com mais de 10 anos de sólida experiência em engenharia de qualidade de software, com forte atuação em liderança técnica e automação de testes funcionais e não-funcionais. Especialista na criação e manutenção de robustos Test Automation Frameworks utilizando Selenium, Cypress, Playwright, Katalon e Robot Framework para interfaces Web e Mobile. Amplo domínio em testes e validações de APIs REST/SOAP com ferramentas de mercado como Postman, Newman e RestAssured. Histórico de contribuição em sistemas de alta complexidade e missão crítica nos setores financeiro, de segurança pública e de telecomunicações. Profissional certificado ISTQB CTFL, engajado com a cultura Shift-left e metodologias ágeis (Scrum e Kanban) para acelerar a entrega contínua com qualidade.
+Principais Competências
+
+Hard Skills: QA Automation, Test Automation Frameworks, Automação Web/Mobile, Testes de API, Testes Manuais, Testes Funcionais, Teste de Regressão, Performance/Load Testing, CI/CD Pipelines, Quality Gates, Data Validation, Shift-left testing, Mapeamento de Processos, Documentação técnica.
+Tecnologias e Ferramentas: Selenium WebDriver, Cypress, Playwright, Katalon Studio, Robot Framework, Postman, RestAssured, Newman, Swagger, SoapUI, JMeter, Git, GitHub, GitLab CI, Jenkins, Jira, TestLink, IBM RQM, QASE, TFS, SonarQube, AWS, Graylog, Mainframe.
+Bancos de Dados & Linguagens: SQL (Oracle, PostgreSQL, DB2, MySQL, SQL Server), NoSQL (DynamoDB), Java (JUnit), Python (Behave), Ruby (Capybara, Cucumber), JavaScript, Angular, COBOL.
+
+Soft Skills: Liderança técnica, capacidade analítica, atenção aos detalhes, comunicação clara, proatividade, organização, pensamento crítico, resolução de problemas e trabalho em equipe.
+
+Experiência Profissional
+
+Meta
+Analista de Qualidade de Software III (Sênior) | Dezembro de 2025 – Atual
+Otimizei a estabilidade e a confiabilidade de plataformas globais que conectam bilhões de usuários, por meio do desenvolvimento e manutenção contínua de frameworks de automação de testes de alta performance.
+Garanti a integridade de contratos e regras de negócio em arquiteturas de microserviços escaláveis, realizando validações rigorosas e testes automatizados de APIs REST utilizando Postman, Newman e RestAssured.
+Reduzi o Time-to-Market em squads multidisciplinares de alta performance, aplicando práticas ágeis com Scrum/Kanban e integrando suítes de testes regressivos, funcionais e de integração ao pipeline de CI/CD.
+Mitiguei riscos em produção através de processos avançados de Data Validation, manipulando grandes volumes de dados em bancos Oracle, DB2, PostgreSQL e MySQL para a criação de cenários de teste complexos.
+
+G4F
+Analista de Qualidade de Software Sênior (TSE / G4F) | Junho de 2024 – Abril de 2025
+Assegurei a estabilidade em escala nacional de sistemas eleitorais complexos e do aplicativo e-Título (Android/iOS), mitigando falhas e bugs sob cenários de alta criticidade e tráfego massivo.
+Validei fluxos críticos de integridade biométrica e mecanismos de segurança (Liveness ativo e passivo), executando testes funcionais rigorosos sobre a biblioteca integrada GRIAULE.
+Aumentou a resiliência sistêmica contra picos de tráfego em eleições simuladas, planejando e gerenciando testes nacionais de estresse, carga e performance utilizando o Apache JMeter.
+Desenvolvi uma ferramenta interna baseada em Angular para acelerar a geração de massas e consultas estruturadas a bases de dados, reduzindo o tempo de preparação técnica dos testes.
+Diminuí a incidência de falhas técnicas na esteira e assegurei conformidade regulatória com as diretrizes ISO 27001 e LGPD, conduzindo auditorias internas de governança e implementando a cultura de Shift-Left desde o suporte N1.
+
+Snowman Labs
+Analista de QA Sênior | Janeiro de 2023 – Maio de 2024
+Liderei de forma autônoma a estratégia global de qualidade em uma fábrica de software ágil, estruturando planos, roteiros e suítes de testes fim a fim gerenciadas através da plataforma QASE.
+Acelerei a detecção de defeitos diários no ciclo de desenvolvimento, implementando frameworks de automação utilizando Python e Behave (BDD/Gherkin) integrados aos fluxos automatizados de CI/CD.
+Garantia a paridade técnica e a qualidade visual em aplicações Web e plataformas Mobile, mapeando requisitos complexos e isolando falhas de integração entre front-end e back-end com Postman e Swagger.
+Otimizei o tempo de configuração das equipes técnicas, gerenciando ambientes de homologação isolados através de máquinas virtuais e construindo consultas avançadas em PostgreSQL para auditoria de dados.
+
+Wipro Limited
+Lead Test Analyst (Projeto Telefônica VIVO) | Janeiro de 2021 – Setembro de 2022
+Liderei squads técnicos de engenharia de testes para o ecossistema crítico da Telefônica VIVO, coordenando estratégias avançadas de automação em aplicações corporativas de grande porte.
+Implementei suítes automatizadas robustas para validação sistêmica de alta complexidade em implementações Salesforce, utilizando Java, JUnit, Cucumber e LeanFT.
+Aumentei a confiabilidade das integrações corporativas de telecomunicações, construindo testes automatizados de API (REST) baseados em RestAssured.
+Automatizei as esteiras de compilação, teste e deploy em infraestruturas virtuais e ambientes Linux (via acesso SSH), gerenciando o ciclo de vida DevOps através de ferramentas como GitLab CI e Jenkins.
+
+Stefanini Brasil
+Analista de Testes Sênior (Projetos: Polícia Federal e Caixa Econômica Federal) | Maio de 2018 – Março de 2021
+Assegurei a integridade financeira e a conformidade de rotinas críticas legadas na Caixa Econômica Federal, planejando e executando testes em programas COBOL focados no processamento batch de arquivos de remessa.
+Mitiguei riscos em sistemas de segurança nacional da Polícia Federal, realizando análise técnica antecipada baseada em artefatos UML e diagramas de processo.
+Aumentou a cobertura de testes funcionais e regressivos, construindo scripts de automação mutistack utilizando Java (JUnit), Ruby (Capybara/Cucumber) e frameworks como Selenium e Katalon.
+Gerenciei o ciclo de defeitos e a geração de evidências regulatórias rigorosas para stakeholders, utilizando as plataformas IBM RQM e TestLink de maneira integrada ao Jenkins.
+Experiências Anteriores (Resumo para Escaneabilidade)
+Squadra Tecnologia | Analista de Testes de Software (Projeto ANTT) – Liderança técnica, implantação da cultura de QA, testes funcionais de backend com SQL Server/MySQL e automação via Katalon Studio/Selenium (2017 – 2018).
+
+Cast IT Group | Software Tester – Execução ágil de testes, gestão de KPIs e métricas de qualidade via Jira/Mantis, testes em arquiteturas Web Java/PHP/Angular (2016 – 2017).
+Implanta Informática | Software Tester – Garantia de qualidade integrada entre hardware e software, mapeamento UML e aplicação prática de padrões ISTQB (2015).
+Fábrica de Software do Instituto Superior Fátima | Desenvolvedor de Software (EducatuX) – Construção de perfil híbrido (SDET), testes unitários e lógica estruturada em JavaScript e Linux Open Source (2012 – 2015).
+Perto S.A. | Analista de Qualidade / Líder de Setor – Testes funcionais em software/hardware embarcado e coordenação de equipes técnicas em campo (2011 – 2015).
+
+Formação Acadêmica
+Graduação em Análise e Desenvolvimento de Sistemas | Instituto Superior Fátima (ISF) – Concluído.
+Extensões e Cursos Técnicos: Administrador de Redes Linux (Sistemas Abertos), Redes de Computadores e Infraestrutura (Escola Técnica de Brasília), Web Design e Mídias Digitais (Bit Company).
+
+Certificações Profissionais
+ISTQB CTFL – Certified Tester Foundation Level (BSTQB / International Software Testing Qualifications Board).
+COBIT 5 Foundation.
+Formações técnicas adicionais: Automação Web Avançada com Python, Selenium e Behave; Automação Multistack com Capybara, Cucumber e Ruby; Treinamento e Governança em LGPD.

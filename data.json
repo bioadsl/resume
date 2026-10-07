@@ -1,0 +1,190 @@
+{
+  "profile": {
+    "name": "Fabrício Duarte",
+    "title": "QA Automation Engineer & Senior Test Analyst",
+    "location": "Distrito Federal, Brasil",
+    "email": "fabricio.4135@gmail.com",
+    "phone": "+55 (61) 98100-0000",
+    "linkedin": "https://linkedin.com/in/fabricioduarte",
+    "github": "https://github.com/bioadsl",
+    "cvUrl": "./curriculo.pdf"
+  },
+  "about": {
+    "summary": "Analista de Testes Sênior e QA Automation Engineer com mais de 10 anos de sólida experiência em engenharia de qualidade de software, com forte atuação em liderança técnica e automação de testes funcionais e não-funcionais. Especialista na criação e manutenção de robustos Test Automation Frameworks utilizando Selenium, Cypress, Playwright, Katalon e Robot Framework para interfaces Web e Mobile. Amplo domínio em testes e validações de APIs REST/SOAP com ferramentas de mercado como Postman, Newman e RestAssured. Histórico de contribuição em sistemas de alta complexidade e missão crítica nos setores financeiro, de segurança pública e de telecomunicações. Profissional certificado ISTQB CTFL, engajado com a cultura Shift-left e metodologias ágeis (Scrum e Kanban) para acelerar a entrega contínua com qualidade."
+  },
+  "skills": {
+    "categories": [
+      {
+        "name": "Linguagens",
+        "icon": "💻",
+        "items": ["Java", "Python", "JavaScript", "Ruby", "SQL", "COBOL", "TypeScript"]
+      },
+      {
+        "name": "Frameworks de Automação",
+        "icon": "⚙️",
+        "items": ["Selenium WebDriver", "Cypress", "Playwright", "Katalon Studio", "Robot Framework", "Cucumber", "Behave", "JUnit", "Capybara"]
+      },
+      {
+        "name": "Testes de API",
+        "icon": "🔗",
+        "items": ["Postman", "Newman", "RestAssured", "Swagger/OpenAPI", "SoapUI", "Karate DSL"]
+      },
+      {
+        "name": "DevOps / CI-CD",
+        "icon": "🚀",
+        "items": ["Git", "GitHub", "GitLab CI", "Jenkins", "SonarQube", "AWS", "Docker", "Quality Gates"]
+      },
+      {
+        "name": "Bancos de Dados",
+        "icon": "🗄️",
+        "items": ["Oracle", "PostgreSQL", "DB2", "MySQL", "SQL Server", "DynamoDB"]
+      },
+      {
+        "name": "Metodologias & Ferramentas",
+        "icon": "📋",
+        "items": ["Scrum", "Kanban", "Shift-Left Testing", "ISTQB", "Jira", "TestLink", "QASE", "TFS", "IBM RQM", "JMeter", "Graylog", "Mainframe"]
+      }
+    ]
+  },
+  "experience": [
+    {
+      "company": "Meta",
+      "position": "Analista de Qualidade de Software III (Sênior)",
+      "period": "Dezembro de 2025 – Atual",
+      "location": "Remoto",
+      "highlights": [
+        "Otimizei a estabilidade e a confiabilidade de plataformas globais que conectam bilhões de usuários, por meio do desenvolvimento e manutenção contínua de frameworks de automação de testes de alta performance.",
+        "Garanti a integridade de contratos e regras de negócio em arquiteturas de microserviços escaláveis, realizando validações rigorosas e testes automatizados de APIs REST utilizando Postman, Newman e RestAssured.",
+        "Reduzi o Time-to-Market em squads multidisciplinares de alta performance, aplicando práticas ágeis com Scrum/Kanban e integrando suítes de testes regressivos, funcionais e de integração ao pipeline de CI/CD.",
+        "Mitiguei riscos em produção através de processos avançados de Data Validation, manipulando grandes volumes de dados em bancos Oracle, DB2, PostgreSQL e MySQL para a criação de cenários de teste complexos."
+      ]
+    },
+    {
+      "company": "G4F",
+      "position": "Analista de Qualidade de Software Sênior (TSE / G4F)",
+      "period": "Junho de 2024 – Abril de 2025",
+      "location": "Brasília, DF",
+      "highlights": [
+        "Assegurei a estabilidade em escala nacional de sistemas eleitorais complexos e do aplicativo e-Título (Android/iOS), mitigando falhas e bugs sob cenários de alta criticidade e tráfego massivo.",
+        "Validei fluxos críticos de integridade biométrica e mecanismos de segurança (Liveness ativo e passivo), executando testes funcionais rigorosos sobre a biblioteca integrada GRIAULE.",
+        "Aumentei a resiliência sistêmica contra picos de tráfego em eleições simuladas, planejando e gerenciando testes nacionais de estresse, carga e performance utilizando o Apache JMeter.",
+        "Desenvolvi uma ferramenta interna baseada em Angular para acelerar a geração de massas e consultas estruturadas a bases de dados, reduzindo o tempo de preparação técnica dos testes.",
+        "Diminuí a incidência de falhas técnicas na esteira e assegurei conformidade regulatória com as diretrizes ISO 27001 e LGPD, conduzindo auditorias internas de governança e implementando a cultura de Shift-Left desde o suporte N1."
+      ]
+    },
+    {
+      "company": "Snowman Labs",
+      "position": "Analista de QA Sênior",
+      "period": "Janeiro de 2023 – Maio de 2024",
+      "location": "Remoto",
+      "highlights": [
+        "Liderei de forma autônoma a estratégia global de qualidade em uma fábrica de software ágil, estruturando planos, roteiros e suítes de testes fim a fim gerenciadas através da plataforma QASE.",
+        "Acelerei a detecção de defeitos diários no ciclo de desenvolvimento, implementando frameworks de automação utilizando Python e Behave (BDD/Gherkin) integrados aos fluxos automatizados de CI/CD.",
+        "Garanti a paridade técnica e a qualidade visual em aplicações Web e plataformas Mobile, mapeando requisitos complexos e isolando falhas de integração entre front-end e back-end com Postman e Swagger.",
+        "Otimizei o tempo de configuração das equipes técnicas, gerenciando ambientes de homologação isolados através de máquinas virtuais e construindo consultas avançadas em PostgreSQL para auditoria de dados."
+      ]
+    },
+    {
+      "company": "Wipro Limited",
+      "position": "Lead Test Analyst (Projeto Telefônica VIVO)",
+      "period": "Janeiro de 2021 – Setembro de 2022",
+      "location": "Remoto",
+      "highlights": [
+        "Liderei squads técnicos de engenharia de testes para o ecossistema crítico da Telefônica VIVO, coordenando estratégias avançadas de automação em aplicações corporativas de grande porte.",
+        "Implementei suítes automatizadas robustas para validação sistêmica de alta complexidade em implementações Salesforce, utilizando Java, JUnit, Cucumber e LeanFT.",
+        "Aumentei a confiabilidade das integrações corporativas de telecomunicações, construindo testes automatizados de API (REST) baseados em RestAssured.",
+        "Automatizei as esteiras de compilação, teste e deploy em infraestruturas virtuais e ambientes Linux (via acesso SSH), gerenciando o ciclo de vida DevOps através de ferramentas como GitLab CI e Jenkins."
+      ]
+    },
+    {
+      "company": "Stefanini Brasil",
+      "position": "Analista de Testes Sênior (Polícia Federal / Caixa Econômica)",
+      "period": "Maio de 2018 – Março de 2021",
+      "location": "Brasília, DF",
+      "highlights": [
+        "Assegurei a integridade financeira e a conformidade de rotinas críticas legadas na Caixa Econômica Federal, planejando e executando testes em programas COBOL focados no processamento batch de arquivos de remessa.",
+        "Mitiguei riscos em sistemas de segurança nacional da Polícia Federal, realizando análise técnica antecipada baseada em artefatos UML e diagramas de processo.",
+        "Aumentei a cobertura de testes funcionais e regressivos, construindo scripts de automação multistack utilizando Java (JUnit), Ruby (Capybara/Cucumber) e frameworks como Selenium e Katalon.",
+        "Gerenciei o ciclo de defeitos e a geração de evidências regulatórias rigorosas para stakeholders, utilizando as plataformas IBM RQM e TestLink de maneira integrada ao Jenkins."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "title": "Test Automation Framework - Cypress",
+      "description": "Framework completo de automação E2E com Cypress, implementando BDD com Cucumber, relatórios com Allure, integração com GitHub Actions e boas práticas de Page Object Model.",
+      "tags": ["Cypress", "Cucumber", "JavaScript", "CI/CD", "GitHub Actions"],
+      "github": "https://github.com/bioadsl/cypress-automation-framework",
+      "icon": "🌐"
+    },
+    {
+      "title": "Playwright API Testing Suite",
+      "description": "Suíte completa de testes automatizados de APIs REST usando Playwright, com validação de contratos, schemas com ZOD, geração de massa de dados dinâmica e relatórios avançados.",
+      "tags": ["Playwright", "API Testing", "TypeScript", "ZOD", "REST"],
+      "github": "https://github.com/bioadsl/playwright-api-testing",
+      "icon": "🔌"
+    },
+    {
+      "title": "Robot Framework - Web & Mobile",
+      "description": "Framework híbrido com Robot Framework para automação de testes Web e Mobile (Appium), com keywords reutilizáveis, integração com Selenium e execução paralela.",
+      "tags": ["Robot Framework", "Selenium", "Appium", "Python", "BDD"],
+      "github": "https://github.com/bioadsl/robot-hybrid-framework",
+      "icon": "🤖"
+    },
+    {
+      "title": "Performance Testing Suite - JMeter",
+      "description": "Estrutura de testes de performance, carga e estresse com Apache JMeter, incluindo planos de testes distribuídos, monitoramento e relatórios com gráficos interativos.",
+      "tags": ["JMeter", "Performance", "Load Testing", "Docker", "Grafana"],
+      "github": "https://github.com/bioadsl/jmeter-performance-suite",
+      "icon": "⚡"
+    },
+    {
+      "title": "Selenium Java BDD Framework",
+      "description": "Framework de automação Web com Selenium WebDriver em Java, usando BDD (Cucumber), Page Factory, design patterns e integração com Jenkins e SonarQube.",
+      "tags": ["Selenium", "Java", "Cucumber", "JUnit", "Jenkins"],
+      "github": "https://github.com/bioadsl/selenium-java-bdd",
+      "icon": "☕"
+    },
+    {
+      "title": "QA Quality Dashboard",
+      "description": "Dashboard analítico para visualização de métricas de qualidade, cobertura de testes, tracking de defeitos e indicadores ágeis construído com HTML/CSS/JS puro.",
+      "tags": ["JavaScript", "CSS Grid", "Analytics", "Metrics", "DataViz"],
+      "github": "https://github.com/bioadsl/qa-quality-dashboard",
+      "icon": "📊"
+    }
+  ],
+  "education": [
+    {
+      "institution": "Instituto Superior Fátima (ISF)",
+      "degree": "Graduação em Análise e Desenvolvimento de Sistemas",
+      "period": "Concluído",
+      "icon": "🎓"
+    }
+  ],
+  "certifications": [
+    {
+      "name": "ISTQB CTFL - Certified Tester Foundation Level",
+      "issuer": "BSTQB / International Software Testing Qualifications Board",
+      "icon": "🏆"
+    },
+    {
+      "name": "COBIT 5 Foundation",
+      "issuer": "ISACA",
+      "icon": "📜"
+    },
+    {
+      "name": "Automação Web Avançada com Python, Selenium e Behave",
+      "issuer": "Formação Técnica",
+      "icon": "🐍"
+    },
+    {
+      "name": "Automação Multistack com Capybara, Cucumber e Ruby",
+      "issuer": "Formação Técnica",
+      "icon": "💎"
+    }
+  ],
+  "footer": {
+    "portfolioRepo": "https://github.com/bioadsl/resume",
+    "year": "2026"
+  }
+}
