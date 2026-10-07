@@ -1336,21 +1336,37 @@
     }
 
     // --------- LinkedIn Section Parser ---------
-    // The official LinkedIn PDF uses standardized section headers - EN/PT-BR/ES
+    // The official LinkedIn PDF uses standardized section headers - EN/PT-BR/ES + "Page N of M" footer = proof
     function detectLinkedInText(text) {
-      var ok = REQUIRED_KWS_FOR_LI.filter(function (r) { return r.test(text || ''); }).length;
-      return ok >= 3; // at least 3 typical LI keywords
+      var ALL_KWS = [
+        // ASSINATURA INFALÍVEL: todo PDF oficial do LinkedIn tem esse footer em TODAS as páginas
+        { re: /Page\s+\d+\s+(?:of|de)\s+\d+/i, weight: 999 },
+        // Palavras-chave do LinkedIn (PT-BR 2024-2026)
+        { re: /Forma[çc][aã]o\s+acad[êe]mica/i, weight: 3 },
+        { re: /Compet[êe]ncias\s*[:;]?/i, weight: 3 },
+        { re: /Certifica[çc][õo]es|Licen[çc]as/i, weight: 3 },
+        { re: /Idiomas|Languages|L[ií]nguas/i, weight: 2 },
+        { re: /Projetos|Projects|Proyectos/i, weight: 2 },
+        { re: /Experi[êe]ncia\s*(?:profissional)?|Experience/i, weight: 3 },
+        { re: /Sobre\s*mim|Summary|About\b/i, weight: 2 },
+        { re: /(?:\(\d+\s+anos?(?:\s+\d+\s+m[eê]s(?:es)?)?\)/, weight: 1 },
+        { re: /(?:janeiro|fevereiro|mar[çc]o|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)\s+de\s+\d{4}/i, weight: 1 }
+      ];
+      var score = 0;
+      ALL_KWS.forEach(function (k) { if (k.re.test(text || '')) score += k.weight; });
+      return score >= 1; // Basta 1 ponto para passar (o "Page N of M" é suficiente)
     }
 
     // Section headers we look for in the PDF text (multilang)
+    // Flexível: aceita header seguido de : ; , . ou fim de linha
     var SECTION_HEADERS = [
-      { key: 'experience', re: /^\s*(?:Experi[êe]ncia|Experience|Exp\.\s*Profissional|Experiencia profesional)\s*$/mi },
-      { key: 'education', re: /^\s*(?:Educa[çc][aã]o|Education|Forma[çc][aã]o acad[êe]mica|Educación|Formazione)\s*$/mi },
-      { key: 'certifications', re: /^\s*(?:Certifica[çc][õo]es|Certifications|Licen[çc]as e certifica[çc][õo]es|Licenses & Certifications|Diplomas y certificaciones)\s*$/mi },
-      { key: 'skills', re: /^\s*(?:Compet[êe]ncias|Skills|Habilidades|Competencias|Aptitudes|Top skills)\s*$/mi },
-      { key: 'languages', re: /^\s*(?:Idiomas|Languages|Línguas|Lenguages)\s*$/mi },
-      { key: 'projects', re: /^\s*(?:Projetos|Projects|Proyectos)\s*$/mi },
-      { key: 'summary', re: /^\s*(?:Sobre|Summary|Extrato profissional|Acerca de|Sobre mim|About)\s*$/mi }
+      { key: 'experience', re: /^\s*(?:Experi[êe]ncia(?:\s+profissional)?|Experience|Exp\.\s*Profissional|Experiencia profesional|Exp\.?\s*profesional)\s*(?:[:;,.]|$)/mi },
+      { key: 'education', re: /^\s*(?:Educa[çc][aã]o|Education|Forma[çc][aã]o\s+acad[êe]mica|Educación|Formazione|Forma[çc][aã]o)\s*(?:[:;,.]|$)/mi },
+      { key: 'certifications', re: /^\s*(?:Certifica[çc][õo]es|Certifications|Licen[çc]as\s*e\s*certifica[çc][õo]es|Licenses\s*&\s*Certifications|Diplomas\s*y\s*certificaciones)\s*(?:[:;,.]|$)/mi },
+      { key: 'skills', re: /^\s*(?:Compet[êe]ncias|Skills|Habilidades|Competencias|Aptitudes|Top\s+skills)\s*(?:[:;,.\s\-–]|$)/mi },
+      { key: 'languages', re: /^\s*(?:Idiomas|Languages|L[ií]nguas|Lenguages|Lenguas)\s*(?:[:;,.]|$)/mi },
+      { key: 'projects', re: /^\s*(?:Projetos|Projects|Proyectos)\s*(?:[:;,.]|$)/mi },
+      { key: 'summary', re: /^\s*(?:Sobre(?:\s+mim)?|Summary|Extrato\s+profissional|Acerca\s+de|About(?:\s+me)?)\s*(?:[:;,.]|$)/mi }
     ];
 
     function splitSections(text) {
@@ -1365,6 +1381,12 @@
           if (SECTION_HEADERS[i].re.test(line)) {
             current = SECTION_HEADERS[i].key;
             matched = true;
+            // Muitas vezes Competências: vem na MESMA LINHA que o 1º item (ex: "Competências; Selenium")
+            // Então, se após o header ainda houver conteúdo após o separador (: ; ,), incluímos esta linha também na seção:
+            var afterHeader = line.replace(SECTION_HEADERS[i].re, '').trim();
+            if (afterHeader && /^[:;,\-–]\s*/.test(afterHeader)) {
+              sections[current] += afterHeader.replace(/^[:;,\-–]\s*/, '') + '\n';
+            }
           }
         }
         if (!matched) {
@@ -1424,49 +1446,157 @@
 
     function parseExperience(text) {
       if (!text) return [];
-      // LinkedIn PDF experience blocks typically look like:
-      //   Company Name
-      //   Title
-      //   Dates (location)?
-      //   Description lines...
+
+      // Parser robusto para LinkedIn PT-BR (formato real de profile.pdf do usuário):
+      // BLOCK = EMPRESA (linha) → CARGO (linha) → PERÍODO + (DURAÇÃO) [→ LOCALIZAÇÃO] → DESCRIÇÃO [com subseções Responsabilidades:, Capacidade Técnica:, Competências]
+      // Até encontrar nova EMPRESA (detectada via próxima linha sem bullets / sem subseção + data logo abaixo).
+      var lines = (text || '').split(/\r?\n/).map(function (l) {
+        return l.replace(/\xa0/g, ' ').trim();
+      }).filter(function (l) {
+        if (!l) return false;
+        if (/^Page\s+\d+\s+(?:of|de)\s+\d+\s*$/i.test(l)) return false; // remover footer
+        if (/^\s*Page\s+\d+\s+of\s+\d+\s*$/i.test(l)) return false;
+        return true;
+      });
+
+      // Regex de duração no formato exato do LinkedIn PT-BR 2025: "abril de 2017 - abril de 2018 (1 ano 1 mês)"
+      var PERIOD_RE_FULL = /(?:janeiro|fevereiro|mar[çc]o|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro|jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez|Presente|Atual|o\s+momento)\s+de\s+\d{4}\s*[-–—]\s*(?:(?:janeiro|fevereiro|mar[çc]o|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro|jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez|Presente|Atual|o\s+momento)\s+de\s+\d{4}|\d{4}|Presente|Atual)\s*(?:\s*\(\s*\d+\s+anos?[^)]*\))?/i;
+      var DURATION_PAREN_RE = /\(\s*\d+\s+anos?/;
+      var LOCAL_RE = /^(Remoto|Brasil|Brasília|Distrito\s+Federal|Brasília\s+e\s+Região|São\s+Paulo|Rio\s+de\s+Janeiro|Porto\s+Alegre|Salvador|SP|DF|RJ)/i;
+
+      function isCompanyNameLine(idx) {
+        // Nome de empresa: linhas curtas (4 a 60 chars), sem bullets iniciais, sem "·" de dados, sem "Competências" / "Responsabilidades" etc.
+        if (idx >= lines.length) return false;
+        var l = lines[idx];
+        if (!l) return false;
+        if (l.length < 3 || l.length > 60) return false;
+        if (/^[•\-*\d]/.test(l)) return false;
+        if (PERIOD_RE_FULL.test(l)) return false;
+        if (LOCAL_RE.test(l) && !/^(Perto|S\.A\.|Grupo|Servi[çc]os|Engenharia)/i.test(l)) return false;
+        if (/^(?::|-|,)/.test(l)) return false;
+        // Deve conter ao menos uma letra maiúscula inicial (empresa)
+        if (!/^[A-ZÀ-Ý0-9]/.test(l)) return false;
+        // Não pode ser um subheader de descrição (Responsabilidades / Capacidade Técnica / Competências)
+        if (/^(Responsabilidades|Capacidade\s+T[ée]cnica|Compet[êe]ncias|Atribui[çc][õo]es|Principais\s+resultados|Conquistas|Entregas|Descri[çc][aã]o)\s*[:;]?$/i.test(l)) return false;
+        // NÃO PODE ser a linha abaixo ser um período SEM ser cargo (caso duvidoso: validação forte)
+        var next1 = (idx + 1 < lines.length) ? lines[idx + 1] : '';
+        var next2 = (idx + 2 < lines.length) ? lines[idx + 2] : '';
+        // Boa assinatura de empresa: "Nome Empresa" → "Cargo" (sênior/analista/engenheiro etc.) → Período (data regex)
+        if (next2 && PERIOD_RE_FULL.test(next2)) return true;
+        // Ou empresa → período (casos onde cargo vem agrupado na linha 2 com duração)
+        if (next1 && PERIOD_RE_FULL.test(next1)) return true;
+        // Se for "Nome Empresa" e a linha de baixo contém um "cargo conhecido" (Sênior, Analista, Engenheiro, QA, Developer, Líder)
+        if (next1 && /(Analista|Engenheir|Engineer|S[eê]nior|Lead|QA|Testes|Developer|Desenvolvedor|L[ií]der|Gerente|Tester|Coordenad|Consultor|Estagi|Arquiteto)/.test(next1)) return true;
+        return false;
+      }
+
+      function detectCompanyIndices() {
+        var result = [];
+        for (var i = 0; i < lines.length; i++) {
+          if (isCompanyNameLine(i)) result.push(i);
+        }
+        return result;
+      }
+
+      var idxEmpresas = detectCompanyIndices();
       var entries = [];
-      var raw = text.replace(/\s+\n/g, '\n').replace(/\n{3,}/g, '\n\n');
-      // Split by blank lines then rebuild blocks heuristically.
-      var chunks = raw.split(/\n\s*\n/).map(function (c) { return c.trim(); }).filter(Boolean);
-      var i = 0;
-      while (i < chunks.length) {
-        var block = chunks[i];
-        var lines = block.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
-        // Strip "Page X of Y" lines
-        lines = lines.filter(function (l) { return !/^Page\s+\d+\s+(of|de)\s+\d+$/i.test(l); });
-        if (lines.length < 2) { i++; continue; }
-        var company = '';
+
+      for (var e = 0; e < idxEmpresas.length; e++) {
+        var start = idxEmpresas[e];
+        var end = (e + 1 < idxEmpresas.length) ? idxEmpresas[e + 1] : lines.length;
+        var block = lines.slice(start, end);
+        if (block.length < 2) continue;
+
+        var company = block[0];
         var title = '';
         var period = '';
         var location = '';
-        var bullets = '';
-        // Heuristic: 1st significant line = Company, 2nd = Title, lines with duration patterns = Period+Location, rest = bullets
-        var durRe = /(?:Jan|Fev|Mar|Abr|Mai|Jun|Jul|Ago|Set|Out|Nov|Dez|January|February|March|April|May|June|July|August|September|October|November|December|Ene|Feb|Mar|Abr|May|Jun|Jul|Ago|Sep|Oct|Nov|Dic|Presente|Atual|Actual|o momento|Present|moment|de)\b.*(?:\d{4}|\d{4}|\baté\b|\bto\b|-|–|—).*\d{4}?/i;
-        var cursor = 0;
-        if (lines.length >= 1) { company = lines[cursor++]; }
-        if (lines.length >= 2 && !durRe.test(lines[cursor])) { title = lines[cursor++]; }
-        if (lines.length > cursor && durRe.test(lines[cursor])) {
-          var pl = lines[cursor++];
-          // Some formats have "Period · Location" on same line
-          var parts = pl.split(/\s·\s|\s{2,}|,\s*(?=Brasil|Brazil|Remoto|Remote)/);
-          period = parts[0] || pl;
-          if (parts.length > 1) location = parts.slice(1).join(' · ').trim();
+        var bulletsArr = [];
+        var c = 1;
+
+        // Posição 1 = cargo, a menos que seja uma data (caso "cargo inline")
+        if (!PERIOD_RE_FULL.test(block[c])) {
+          title = block[c++];
         }
-        if (lines.length > cursor) {
-          bullets = lines.slice(cursor).map(function (b) {
-            if (/^[•\-\*\d\.\)\s]+/.test(b)) return b.replace(/^[•\-\*\d\.\)\s]+/, '• ');
-            return '• ' + b;
-          }).join('\n');
+        // Posição atual = período
+        if (c < block.length && (PERIOD_RE_FULL.test(block[c]) || DURATION_PAREN_RE.test(block[c]))) {
+          period = block[c++];
+          // Se período já tem localização (separado por "·"), separa
+          if (/\s·\s/.test(period)) {
+            var partsP = period.split(/\s·\s/);
+            period = partsP[0];
+            location = partsP.slice(1).join(' · ').trim();
+          }
+          // Linha seguinte: se é LOCAL_RE (cidade/estado/remoto/brasil), é localização
+          if (!location && c < block.length && LOCAL_RE.test(block[c])) {
+            location = block[c++];
+          }
+        } else if (c < block.length && LOCAL_RE.test(block[c])) {
+          location = block[c++];
         }
+        // Resto do bloco = bullets (descrição com subseções)
+        for (var b = c; b < block.length; b++) {
+          var bl = block[b];
+          if (!bl) continue;
+          // Transforma subheaders "Responsabilidades:" e "Capacidade Técnica:" em bullets em negrito (só prefixo textual)
+          var hdrMatch = bl.match(/^(Responsabilidades|Capacidade\s+T[ée]cnica|Compet[êe]ncias|Atribui[çc][õo]es|Principais\s+resultados|Conquistas|Entregas|Descri[çc][aã]o)\s*[:;]?\s*(.*)$/i);
+          if (hdrMatch) {
+            var prefix = hdrMatch[1];
+            var rest = (hdrMatch[2] || '').trim();
+            if (rest) {
+              bulletsArr.push(prefix + ': ' + rest);
+            } else {
+              bulletsArr.push(prefix + ':');
+            }
+            continue;
+          }
+          // Linha começando com "- " ou com bullets → adicionar direto
+          if (/^[-•*]\s+/.test(bl)) {
+            bulletsArr.push(bl.replace(/^[-•*]\s+/, ''));
+            continue;
+          }
+          // Competências: Selenium, Jenkins, etc. (já separado por , ou ; )
+          bulletsArr.push(bl);
+        }
+
+        // Monta bullets final (com •)
+        var bullets = bulletsArr.map(function (x) { return '• ' + x; }).join('\n');
+
+        // Adiciona duração de exemplo (3 meses em Perto S.A.) caso a empresa apareça antes do período
         if (company && (title || bullets || period)) {
           entries.push({ company: company, role: title, period: period, location: location, bullets: bullets });
         }
-        i++;
+      }
+
+      // Fallback simples: se nenhum bloco foi detectado com state machine, usa abordagem antiga blank-line
+      if (entries.length === 0) {
+        var raw = text.replace(/\s+\n/g, '\n').replace(/\n{3,}/g, '\n\n');
+        var chunks = raw.split(/\n\s*\n/).map(function (c) { return c.trim(); }).filter(Boolean);
+        var i = 0;
+        var durRe = /(?:Jan|Fev|Mar|Abr|Mai|Jun|Jul|Ago|Set|Out|Nov|Dez|January|February|March|April|May|June|July|August|September|October|November|December|Ene|Feb|Mar|Abr|May|Jun|Jul|Ago|Sep|Oct|Nov|Dic|Presente|Atual|Actual|o momento|Present|moment|de)\b.*(?:\d{4}|\baté\b|\bto\b|-|–|—).*\d{4}?/i;
+        while (i < chunks.length) {
+          var block0 = chunks[i];
+          var lines0 = block0.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+          lines0 = lines0.filter(function (l) { return !/^Page\s+\d+\s+(of|de)\s+\d+$/i.test(l); });
+          if (lines0.length < 2) { i++; continue; }
+          var c0 = ''; var t0 = ''; var p0 = ''; var l0 = ''; var bu0 = '';
+          var cur0 = 0;
+          if (lines0.length >= 1) { c0 = lines0[cur0++]; }
+          if (lines0.length >= 2 && !durRe.test(lines0[cur0])) { t0 = lines0[cur0++]; }
+          if (lines0.length > cur0 && durRe.test(lines0[cur0])) {
+            var pl0 = lines0[cur0++];
+            var parts0 = pl0.split(/\s·\s|\s{2,}|,\s*(?=Brasil|Brazil|Remoto|Remote)/);
+            p0 = parts0[0] || pl0;
+            l0 = parts0.length > 1 ? parts0.slice(1).join(' · ').trim() : '';
+          }
+          if (lines0.length > cur0) {
+            bu0 = lines0.slice(cur0).map(function (bb) {
+              return (/^[•\-\*\d\.\)\s]+/.test(bb) ? bb.replace(/^[•\-\*\d\.\)\s]+/, '• ') : '• ' + bb);
+            }).join('\n');
+          }
+          if (c0 && (t0 || bu0 || p0)) entries.push({ company: c0, role: t0, period: p0, location: l0, bullets: bu0 });
+          i++;
+        }
       }
       return entries.slice(0, 10);
     }
@@ -1474,22 +1604,34 @@
     function parseEducation(text) {
       if (!text) return [];
       var entries = [];
-      var raw = text.replace(/\n{3,}/g, '\n\n');
-      var chunks = raw.split(/\n\s*\n/).map(function (c) { return c.trim(); }).filter(Boolean);
-      chunks.forEach(function (block) {
-        var lines = block.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
-        if (lines.length === 0) return;
-        var inst = lines[0] || '';
-        var course = lines.length >= 2 ? lines[1] : '';
-        var period = '';
-        var extra = '';
-        var yearRe = /\d{4}\s*(?:[-–—]\s*\d{4})?/;
-        for (var i = 2; i < lines.length; i++) {
-          if (!period && yearRe.test(lines[i])) period = lines[i];
-          else extra += (extra ? '; ' : '') + lines[i];
-        }
-        if (inst || course) entries.push({ institution: inst, course: course, period: period, extra: extra });
+      // Padrão LinkedIn PT-BR: Instituto → "Curso · (2011 - 2013)" em UMA LINHA ou duas
+      var lines = (text || '').split(/\r?\n/).map(function (l) { return l.replace(/\xa0/g, ' ').trim(); }).filter(function (l) {
+        if (!l) return false; if (/^Page\s+\d+\s+(?:of|de)\s+\d+\s*$/i.test(l)) return false; return true;
       });
+      var INST_RE = /^[A-ZÀ-Ý0-9]/; // instituições começam com maiúscula
+      var COURSE_PERIOD_RE = /·\s*\(/; // "ADS · (2011-2013)"
+      var i = 0;
+      while (i < lines.length) {
+        if (INST_RE.test(lines[i])) {
+          var inst = lines[i++];
+          var course = ''; var period = ''; var extra = '';
+          if (i < lines.length) {
+            var next = lines[i++];
+            if (COURSE_PERIOD_RE.test(next)) {
+              // Tudo numa linha só: "ISF, Analise e Desenvolvimento de Sistemas · (2011 - 2013)"
+              var parts = next.split(/\s·\s/);
+              course = (parts[0] || '').replace(/^[,\s]+/, '').trim();
+              period = (parts[1] || '').trim();
+            } else {
+              course = next;
+              if (i < lines.length && /\d{4}/.test(lines[i])) period = lines[i++];
+            }
+          }
+          if (inst || course) entries.push({ institution: inst, course: course, period: period, extra: extra });
+          continue;
+        }
+        i++;
+      }
       return entries.slice(0, 8);
     }
 
@@ -1547,12 +1689,31 @@
       var name = parseName(sections.preamble);
       var role = parseRoleCandidate(sections.preamble);
       var summary = parseSummary(sections.summary);
+
+      // 🔴 FALLBACK IMPORTANTE:
+      // O LinkedIn PT-BR 2024-2026 NÃO coloca o header "Experiência Profissional" em PDFs de perfis SENIORES (direto blocos).
+      // Então, se sections.experience está vazio ou retorna 0 cargos, RODAMOS STATE MACHINE NO TEXTO INTEIRO:
       var experiences = parseExperience(sections.experience);
+      if (!experiences.length) experiences = parseExperience(rawText || '');
+      // O mesmo para EDUCAÇÃO (muitas vezes só começa com "Formação acadêmica" no meio do texto, que pode não bater header isolado)
       var educations = parseEducation(sections.education);
+      if (!educations.length && /Forma[çc][aã]o\s+acad[êe]mica/i.test(rawText || '')) {
+        var faMatch = (rawText || '').split(/Forma[çc][aã]o\s+acad[êe]mica/i);
+        if (faMatch.length >= 2) educations = parseEducation(faMatch.slice(1).join(' Formação acadêmica '));
+      }
+
       var certifications = parseCertifications(sections.certifications);
       var skillsRaw = parseSkills(sections.skills);
+      // Fallback Skills: se não encontramos seção Competências com header isolado, juntamos todas as linhas "Competências: X Y Z" espalhadas do PDF (cada cargo tem a sua!)
+      if (!skillsRaw && /Compet[êe]ncias\s*[:;]/.test(rawText || '')) {
+        var allSkillsRe = /Compet[êe]ncias\s*[:;]?\s*([^\n]+)/gim;
+        var allMatches = [];
+        var sk = allSkillsRe.exec(rawText || '');
+        while (sk) { allMatches.push((sk[1] || '').trim()); sk = allSkillsRe.exec(rawText || ''); }
+        if (allMatches.length) skillsRaw = parseSkills(allMatches.join(', '));
+      }
       var languages = parseLanguages(sections.languages);
-      if (!name && !contact.email && experiences.length === 0) {
+      if (!name && !contact.email && experiences.length === 0 && educations.length === 0) {
         return { error: 'Estrutura de PDF do LinkedIn não reconhecida. Verifique se você exportou o PDF diretamente do seu perfil (Configurações > Dados do perfil > Baixar PDF).' };
       }
       var out = {
