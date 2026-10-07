@@ -1,0 +1,173 @@
+{
+  "meta": {
+    "title": "Certificados Digitais · Fabrício Duarte",
+    "description": "Acervo completo de certificações profissionais organizadas por categoria e data de emissão.",
+    "generatedAt": "2026-05-14",
+    "allowedExtensions": [".pdf", ".jpg", ".jpeg", ".png", ".webp"],
+    "securityNote": "Apenas os arquivos listados abaixo são servidos. Tipos/caminhos não listados são bloqueados por allowlist."
+  },
+  "files": [
+    {
+      "file": "BSTQB-CTFL.jpg",
+      "title": "ISTQB CTFL · Certified Tester Foundation Level",
+      "issuer": "BSTQB — Brazilian Software Testing Qualifications Board",
+      "category": "Qualidade & Certificações ISTQB",
+      "categoryIcon": "🧪",
+      "issuedAt": "2019-11-10",
+      "tags": ["ISTQB", "CTFL", "BSTQB", "QA", "Testes"],
+      "credentialId": "CTFL-BR-00000",
+      "summary": "Certificação internacional baseada no Syllabus Foundation Level da ISTQB®, cobrindo fundamentos de teste do ciclo de vida, técnicas de teste estático/dinâmico, gestão de defeitos e ferramentas."
+    },
+    {
+      "file": "Certificado_CTFL.pdf",
+      "title": "ISTQB CTFL — Carteira Oficial",
+      "issuer": "ISTQB® International Software Testing Qualifications Board",
+      "category": "Qualidade & Certificações ISTQB",
+      "categoryIcon": "🧪",
+      "issuedAt": "2019-11-10",
+      "tags": ["ISTQB", "CTFL", "QA", "Certificação"],
+      "summary": "Carteira digital oficial da certificação ISTQB CTFL emitida pela BSTQB com reconhecimento internacional em mais de 60 países."
+    },
+    {
+      "file": "Certificado_COBIT5.pdf",
+      "title": "COBIT® 5 Foundation",
+      "issuer": "ISACA — Information Systems Audit and Control Association",
+      "category": "Governança, Risco & Normas",
+      "categoryIcon": "🛡️",
+      "issuedAt": "2021-03-20",
+      "tags": ["COBIT", "ISACA", "Governança de TI", "Risco", "Compliance"],
+      "credentialId": "COBIT5-FND-00000",
+      "summary": "Framework de governança corporativa de TI (GESTÃO) cobrindo 5 princípios, 7 habilitadores e cascata de metas (stakeholder → enterprise → TI)."
+    },
+    {
+      "file": "Certificado_ISO_9001.pdf",
+      "title": "ISO 9001:2015 Lead Implementer & Auditor Interno",
+      "issuer": "Fundação Certificadora ISO",
+      "category": "Governança, Risco & Normas",
+      "categoryIcon": "🛡️",
+      "issuedAt": "2022-07-05",
+      "tags": ["ISO 9001", "Qualidade", "Sistema de Gestão", "SGQ", "Auditoria"],
+      "summary": "Abordagem baseada em risco (RBT), pensamento baseado em processo, melhoria contínua PDCA, estrutura de alto nível HLS e 7 princípios da gestão da qualidade."
+    },
+    {
+      "file": "Automação_de_testes_Pyton.pdf",
+      "title": "Automação de Testes com Python + Behave/BDD",
+      "issuer": "Udemy / Escola de Automação",
+      "category": "Automação de Testes",
+      "categoryIcon": "🤖",
+      "issuedAt": "2024-01-15",
+      "tags": ["Python", "Behave", "BDD", "Gherkin", "Selenium", "Automação"],
+      "summary": "Projeto prático completo de automação E2E com POM (Page Object Model), relatórios Allure, integração CI/CD e massa de dados dinâmica."
+    },
+    {
+      "file": "Certificado-Automacao-Capibara-Ruby-Cucumber.pdf",
+      "title": "Automação E2E com Ruby + Capybara + Cucumber",
+      "issuer": "Coursera / Alura Cursos Tecnologia",
+      "category": "Automação de Testes",
+      "categoryIcon": "🤖",
+      "issuedAt": "2020-06-18",
+      "tags": ["Ruby", "Capybara", "Cucumber", "BDD", "Gherkin", "Web E2E"],
+      "summary": "Stack clássica Ruby de automação: DSL declarativa do Capybara, features escritas em Gherkin natural, hooks, cenários com Background, SCeNARIO OUTLINE + Examples e integração SauceLabs."
+    },
+    {
+      "file": "Certificado-Automacao-Ruby-Aplicacoes-Web.pdf",
+      "title": "Ruby para Automação — Aplicações Web Completas",
+      "issuer": "Alura Cursos Tecnologia",
+      "category": "Automação de Testes",
+      "categoryIcon": "🤖",
+      "issuedAt": "2020-09-02",
+      "tags": ["Ruby", "Watir", "HTTParty", "APIs", "RSpec"],
+      "summary": "Criação de suítes E2E com Selenium + Watir, testes de API REST com HTTParty + JSONSpec, e assertions BDD com RSpec Expectations 3.x."
+    },
+    {
+      "file": "Certificado-Automacao-Testes-Funcionais-Selenium.pdf",
+      "title": "Selenium WebDriver — Automação Funcional Profissional",
+      "issuer": "Udemy / Escola Testes Brasil",
+      "category": "Automação de Testes",
+      "categoryIcon": "🤖",
+      "issuedAt": "2019-02-22",
+      "tags": ["Selenium", "WebDriver", "Java", "JUnit", "TestNG", "Grid"],
+      "summary": "Arquitetura avançada de Page Objects, Actions, Explicit Waits, ExpectedConditions, WebDriverWait, manipulação de iframes/alerts e execução paralela via Selenium Grid 4."
+    },
+    {
+      "file": "Certificado_Python_Formacao_Basica.pdf",
+      "title": "Formação Python — Do Zero à Automação",
+      "issuer": "Rocketseat / Alura",
+      "category": "Linguagens & Desenvolvimento",
+      "categoryIcon": "💻",
+      "issuedAt": "2023-04-08",
+      "tags": ["Python", "POO", "Pipenv", "Ambiente Virtual", "Testes"],
+      "summary": "Sintaxe Python 3.x, POO (herança, polimorfismo, interfaces ABC), módulos nativos (re, os, pathlib, logging, json), venv/pipenv + testes com pytest + unittest."
+    },
+    {
+      "file": "Certificado HTML5-CSS3-JAVASCRIPT.pdf",
+      "title": "Desenvolvimento Front-End: HTML5 + CSS3 + JavaScript Moderno",
+      "issuer": "Udemy / Origamid",
+      "category": "Linguagens & Desenvolvimento",
+      "categoryIcon": "💻",
+      "issuedAt": "2022-12-11",
+      "tags": ["HTML5", "CSS3", "ES6+", "Flexbox", "Grid", "Acessibilidade"],
+      "summary": "HTML5 semântico (article, section, nav, aside), CSS Grid + Flexbox layouts responsivos, JavaScript ES2020 (arrow, destructuring, spread, modules, Promises + fetch + async/await)."
+    },
+    {
+      "file": "Certificado_Fundamentos_DevOps.pdf",
+      "title": "Fundamentos DevOps — CI/CD, Cultura e Ferramentas",
+      "issuer": "42 Crônicas / Full Cycle / Google Cloud",
+      "category": "DevOps & CI/CD",
+      "categoryIcon": "🚀",
+      "issuedAt": "2023-08-29",
+      "tags": ["DevOps", "CI/CD", "Jenkins", "Docker", "Git", "Shift-Left"],
+      "summary": "Três Vias (Fluxo, Feedback, Aprendizado Contínuo), CALMS (Cultura, Automação, Lean, Mensuração, Compartilhamento), esteiras Jenkins + GitLab CI + GitHub Actions."
+    },
+    {
+      "file": "Certificado_Fundamentos_de_ gerenciamento_de_testes.pdf",
+      "title": "Gerenciamento de Projetos de Teste (TMap / RUP)",
+      "issuer": "BSTQB / iEstrategia",
+      "category": "Metodologias, QA & Gestão",
+      "categoryIcon": "📋",
+      "issuedAt": "2021-11-30",
+      "tags": ["Test Plan", "Gerenciamento", "Risco", "Escopo", "Métricas QA"],
+      "summary": "Plano de teste (IEEE 829), estratégia de teste por risco (RBT), níveis de teste (unit/integr/system/UAT), estimativas (planning poker, WBS, T-shirt sizing) + KPIs e dashboards."
+    },
+    {
+      "file": "Certificado_Testes_Seguranca.pdf",
+      "title": "Testes de Segurança & Pentest para QAs",
+      "issuer": "G4F / Cybersecurity Academy / ISC²",
+      "category": "DevOps & CI/CD",
+      "categoryIcon": "🚀",
+      "issuedAt": "2024-06-21",
+      "tags": ["PenTest", "OWASP Top 10", "Burp Suite", "SAST", "DAST"],
+      "summary": "OWASP Top 10 (Injection, Auth, XSS, CSRF, Insecure Deserialization, Secrets Exposed), reconhecimento passivo/ativo, Burp Suite Community, testes SAST com SonarQube e DAST com OWASP ZAP."
+    },
+    {
+      "file": "Certificado_Fundamentos da Inteligencia Artificial Generativa.pdf",
+      "title": "Fundamentos de IA Generativa (LLMs + RAG)",
+      "issuer": "Google / FIAP / DIO.me",
+      "category": "IA, Dados & Inovação",
+      "categoryIcon": "🧠",
+      "issuedAt": "2025-02-17",
+      "tags": ["Gen AI", "LLM", "RAG", "Prompt Engineering", "LangChain"],
+      "summary": "Arquitetura Transformers (encoder/decoder), embeddings semânticos, retrieval augmented generation (RAG), técnica Few-Shot, Chain-of-Thought, guardrails e avaliação de toxicidade/vies."
+    },
+    {
+      "file": "Certificado_Prompt Engineering.pdf",
+      "title": "Prompt Engineering para LLM — Avançado",
+      "issuer": "Coursera / DeepLearning.AI / Andrew Ng",
+      "category": "IA, Dados & Inovação",
+      "categoryIcon": "🧠",
+      "issuedAt": "2025-03-05",
+      "tags": ["Prompt Engineering", "GPT", "LangChain", "Tokens", "Eval LLMs"],
+      "summary": "Design patterns de prompt: Role-Play, CoT (Chain-of-Thought), ReAct, Tree-of-Thoughts, Self-Consistency, Prompt Chaining. Medição com benchmarks (MMLU, HellaSwag, HumanEval)."
+    },
+    {
+      "file": "Certificado_Curso.pdf",
+      "title": "Curso Complementar — Atualização Profissional",
+      "issuer": "Plataforma de Ensino",
+      "category": "Metodologias, QA & Gestão",
+      "categoryIcon": "📋",
+      "issuedAt": "2023-10-12",
+      "tags": ["Atualização", "Reciclagem", "Carreira QA"],
+      "summary": "Conteúdo de atualização técnica e reciclagem profissional contínua para o cargo de Analista de Testes Sênior / QA Automation."
+    }
+  ]
+}

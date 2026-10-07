@@ -8,5 +8,5 @@ Thumbs.db
 .idea/
 
 ats-builder-repo/
-*.pdf
+/curriculo.pdf
 .tmp_*
