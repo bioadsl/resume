@@ -4,7 +4,7 @@
     "title": "QA Automation Engineer & Senior Test Analyst",
     "location": "Distrito Federal, Brasil",
     "email": "fabricio.4135@gmail.com",
-    "phone": "+55 (61) 98100-0000",
+    "phone": "+55 (61) 98426-0515",
     "linkedin": "https://linkedin.com/in/fabricioduarte",
     "github": "https://github.com/bioadsl",
     "cvUrl": "./curriculo.pdf"
@@ -107,6 +107,51 @@
         "Aumentei a cobertura de testes funcionais e regressivos, construindo scripts de automação multistack utilizando Java (JUnit), Ruby (Capybara/Cucumber) e frameworks como Selenium e Katalon.",
         "Gerenciei o ciclo de defeitos e a geração de evidências regulatórias rigorosas para stakeholders, utilizando as plataformas IBM RQM e TestLink de maneira integrada ao Jenkins."
       ]
+    },
+    {
+      "company": "Squadra Tecnologia",
+      "position": "Analista de Testes de Software (Projeto ANTT)",
+      "period": "Abril de 2017 – Abril de 2018",
+      "location": "Brasília, DF · Presencial",
+      "highlights": [
+        "Liderança técnica na implantação da cultura de qualidade e processos de QA no projeto estratégico da ANTT (Agência Nacional de Transportes Terrestres), elevando o padrão das entregas em ambiente de alta complexidade regulatória.",
+        "Gestão técnica e mentoria de equipes de testadores, promovendo capacitação em ferramentas de automação e disseminação de boas práticas de teste.",
+        "Planejamento de roteiros, planos e suítes de teste para sistemas da ANTT, consolidando métricas e relatórios executivos para suporte à decisão.",
+        "Controle rigoroso da rastreabilidade de requisitos e defeitos utilizando TFS (Team Foundation Server), Jira e Mantis.",
+        "Participação ativa em cerimônias Scrum e leitura de artefatos UML para refinamento precoce de requisitos (cultura Shift-Left).",
+        "Engenharia de Automação: Desenvolvimento de scripts de automação Web utilizando Katalon Studio, Selenium e Selenium IDE.",
+        "Validação estrutural e criação de massas de dados complexas em bancos SQL Server e MySQL, aliadas à gestão de versão em Git e Subversion (SVN)."
+      ]
+    },
+    {
+      "company": "Cast IT Group",
+      "position": "Software Tester",
+      "period": "Abril de 2016 – Abril de 2017",
+      "location": "Brasil · Presencial",
+      "highlights": [
+        "Responsável pela garantia da qualidade funcional e automação de processos em aplicações Web de alta criticidade, atuando estrategicamente com métricas e validação de stacks diversificadas (front-end e back-end) em ambiente ágil.",
+        "Elaboração e execução de casos de teste manuais e automatizados utilizando TestLink, com foco na homologação de evoluções críticas e geração de evidências detalhadas.",
+        "Gestão de ciclo de defeitos e proposição de melhorias via Jira e Mantis, garantindo rastreabilidade completa e correção ágil de falhas.",
+        "Criação de relatórios e indicadores de qualidade (KPIs) estruturados para apoio à tomada de decisão gerencial.",
+        "Execução de testes em squads Scrum, assegurando entregas iterativas com alta confiabilidade e aderência aos requisitos.",
+        "Implementação de testes funcionais automatizados com Selenium e integração contínua via Jenkins, sobre aplicações em Java, PHP, JavaScript, jQuery, JSON, AJAX e Angular.",
+        "Manipulação e consulta a bancos PostgreSQL e MySQL via SQL Developer, com controle de artefatos em Tortoise (SVN/Git)."
+      ]
+    },
+    {
+      "company": "Implanta Informática",
+      "position": "Software Tester",
+      "period": "Junho de 2015 – Dezembro de 2015",
+      "location": "Brasília, DF · Presencial",
+      "highlights": [
+        "Responsável pela garantia da qualidade de soluções integradas de software e hardware, com foco rigoroso na validação de requisitos complexos e regras de negócio. Período de obtenção da certificação internacional ISTQB CTFL (BSTQB).",
+        "Execução e verificação de testes funcionais, assegurando a integração perfeita entre sistemas e dispositivos físicos embarcados.",
+        "Planejamento e controle de condições de teste, validação de resultados esperados e critérios de conclusão de entrega.",
+        "Elaboração de artefatos e relatórios de qualidade detalhados para apoio a decisões operacionais e técnicas.",
+        "Apoio técnico na resolução de problemas e execução de planos de ação corretivos e preventivos para melhoria contínua do processo de QA.",
+        "Aplicação de normas e processos alinhados ao Syllabus ISTQB/BSTQB, com utilização de SQL para validações básicas e TestLink para gestão de casos de teste.",
+        "Leitura de artefatos UML e mapeamento de processos para garantir rastreabilidade entre requisitos e casos de teste."
+      ]
     }
   ],
   "projects": [
@@ -115,63 +160,80 @@
       "description": "Suíte completa de automação de testes E2E para sistema bancário digital RethinkBank, cobrindo fluxos críticos de transações, abertura de contas e validação de operações financeiras.",
       "tags": ["Selenium", "Cucumber", "Java", "BDD", "Banking"],
       "github": "https://github.com/bioadsl/rethinkbank-tests",
-      "icon": "�"
+      "icon": "🏦",
+      "badges": []
     },
     {
       "title": "Trello API - Testes Automatizados",
       "description": "Projeto de automação de testes de API REST para a plataforma Trello, validando autenticação, CRUD de boards, lists e cards, com asserts de contrato e status code.",
       "tags": ["API Testing", "REST Assured", "Java", "Postman", "JSON Schema"],
       "github": "https://github.com/bioadsl/trello-api-tests",
-      "icon": "🔌"
+      "icon": "🔌",
+      "badges": []
     },
     {
       "title": "Automação Front-End - Framework Web",
       "description": "Framework robusto de automação de testes de interface web com padrão Page Object Model, esperas explícitas, manipulação de iframes e relatórios de execução detalhados.",
       "tags": ["Selenium WebDriver", "Cypress", "JavaScript", "POM", "E2E"],
       "github": "https://github.com/bioadsl/test_frontend",
-      "icon": "🎨"
+      "icon": "🎨",
+      "badges": [
+        {"type": "github-actions", "repo": "bioadsl/test_frontend", "label": "CI/CD", "color": "10b981"}
+      ]
     },
     {
       "title": "Automação Back-End - Testes de API",
       "description": "Estrutura de testes automatizados para validação de microsserviços e APIs REST/SOAP, incluindo testes de integração, performance e verificação de payloads.",
       "tags": ["REST Assured", "Postman", "Newman", "API Testing", "Java"],
       "github": "https://github.com/bioadsl/test_backend",
-      "icon": "⚙️"
+      "icon": "⚙️",
+      "badges": [
+        {"type": "github-actions", "repo": "bioadsl/test_backend", "label": "CI/CD", "color": "10b981"}
+      ]
     },
     {
       "title": "Modelo Cucumber - Template BDD",
       "description": "Template reutilizável de projeto BDD com Cucumber para inicialização rápida de suítes de automação, configurado com hooks, steps reutilizáveis e relatórios formatados.",
       "tags": ["Cucumber", "BDD", "Gherkin", "Java", "Template"],
       "github": "https://github.com/bioadsl/modelo-cucumber",
-      "icon": "📋"
+      "icon": "📋",
+      "badges": [
+        {"type": "github-actions", "repo": "bioadsl/modelo-cucumber", "label": "CI/CD", "color": "10b981"}
+      ]
     },
     {
       "title": "Framework BDD - Gherkin & Automação",
       "description": "Framework completo de Behavior Driven Development com cenários escritos em linguagem ubíqua (Gherkin), integrados a camadas de automação Web e API.",
       "tags": ["BDD", "Gherkin", "Cucumber", "Ruby", "Capybara"],
       "github": "https://github.com/bioadsl/bdd",
-      "icon": "🧪"
+      "icon": "🧪",
+      "badges": []
     },
     {
       "title": "RethinkBank Test - QA Financeiro",
       "description": "Projeto de QA dedicado a validações do domínio bancário RethinkBank, com cenários de regressão, testes negativos e simulação de transações financeiras sensíveis.",
       "tags": ["QA Financeiro", "Regressão", "JUnit", "SQL", "Validação de Dados"],
       "github": "https://github.com/bioadsl/rethinkbanktest",
-      "icon": "💳"
+      "icon": "💳",
+      "badges": []
     },
     {
       "title": "Banco QA - Testes de Sistema Bancário",
       "description": "Suíte completa de testes para sistemas bancários legados, incluindo validações de batch COBOL, integração com mainframe e testes manuais estruturados.",
       "tags": ["Testes Manuais", "COBOL", "Mainframe", "SQL", "IBM RQM"],
       "github": "https://github.com/bioadsl/banco-qa",
-      "icon": "🏛️"
+      "icon": "🏛️",
+      "badges": [
+        {"type": "github-actions", "repo": "bioadsl/banco-qa", "label": "CI/CD", "color": "10b981"}
+      ]
     },
     {
       "title": "Cucumber Reports - Relatórios Java",
       "description": "Implementação avançada de relatórios automatizados em projetos Java com Cucumber, incluindo dashboard com gráficos, métricas de cobertura e exportação de evidências.",
       "tags": ["Cucumber", "Java", "Relatórios", "JUnit", "Maven"],
       "github": "https://github.com/bioadsl/cucumber_reports_java",
-      "icon": "📊"
+      "icon": "📊",
+      "badges": []
     }
   ],
   "education": [

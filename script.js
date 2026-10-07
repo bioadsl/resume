@@ -290,6 +290,8 @@
         return '<span class="project-tag">' + escapeHtml(t) + '</span>';
       }).join('');
 
+      const badgesHtml = buildBadgesHtml(proj.badges || [], proj.github || '#');
+
       const card = document.createElement('article');
       card.className = 'project-card';
 
@@ -301,14 +303,46 @@
         '<p class="project-card__description">' + escapeHtml(proj.description || '') + '</p>' +
         '<div class="project-card__tags">' + tagsHtml + '</div>' +
         '<div class="project-card__footer">' +
-          '<a class="btn btn--outline" href="' + escapeAttr(proj.github || '#') + '" target="_blank" rel="noopener noreferrer">' +
-            ICONS.github.replace('<svg', '<svg width="15" height="15"') +
-            ' Ver no GitHub' +
-          '</a>' +
+          (badgesHtml ? '<div class="project-card__badges">' + badgesHtml + '</div>' : '') +
+          '<div class="project-footer__actions">' +
+            '<a class="btn btn--outline" href="' + escapeAttr(proj.github || '#') + '" target="_blank" rel="noopener noreferrer">' +
+              ICONS.github.replace('<svg', '<svg width="15" height="15"') +
+              ' Ver no GitHub' +
+            '</a>' +
+          '</div>' +
         '</div>';
 
       els.projectsGrid.appendChild(card);
     });
+  }
+
+  function buildBadgesHtml(badges, repoUrl) {
+    if (!Array.isArray(badges) || badges.length === 0) return '';
+    return badges.map(function (b) {
+      const type = (b.type || '').toLowerCase();
+      let url = '';
+      let alt = '';
+      if (type === 'github-actions' && b.repo) {
+        const encRepo = encodeURIComponent(b.repo);
+        const color = b.color || '10b981';
+        const label = b.label ? encodeURIComponent(b.label) : 'CI%2FCD';
+        url = 'https://img.shields.io/badge/' + label + '-ativo-%23' + color + '?logo=githubactions&logoColor=white&style=flat-square';
+        alt = b.label || 'CI/CD GitHub Actions ativo';
+      } else {
+        const color = b.color || '6366f1';
+        const label = b.label ? encodeURIComponent(b.label) : 'badge';
+        url = 'https://img.shields.io/badge/' + label + '-%23' + color + '?style=flat-square';
+        alt = b.label || 'badge';
+      }
+      const a = document.createElement('a');
+      a.href = repoUrl + (repoUrl && repoUrl.endsWith('/') ? 'actions' : '/actions');
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.className = 'project-badge';
+      a.title = alt;
+      a.innerHTML = '<img src="' + url + '" alt="' + escapeAttr(alt) + '" loading="lazy" referrerpolicy="no-referrer" />';
+      return a.outerHTML;
+    }).join('');
   }
 
   function renderEducation(education) {

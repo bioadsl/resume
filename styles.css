@@ -870,6 +870,47 @@ body {
 
 .project-card__footer {
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.project-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.project-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0.45rem;
+  border: 1px solid var(--border);
+  line-height: 0;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  background: transparent;
+}
+
+.project-badge:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+}
+
+.project-badge img {
+  display: block;
+  height: 22px;
+  max-width: 100%;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.project-footer__actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .certs__grid {
