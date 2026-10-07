@@ -250,6 +250,14 @@
       "icon": "🎓"
     }
   ],
+  "languages": [
+    {
+      "name": "Inglês",
+      "level": "B2 — Intermediário Avançado (Upper Intermediate)",
+      "description": "Leitura e escrita técnica fluente, conversação intermediária, compreensão de documentação, specs e vídeos técnicos.",
+      "icon": "🇬🇧"
+    }
+  ],
   "certifications": [
     {
       "name": "ISTQB CTFL - Certified Tester Foundation Level",
