@@ -744,7 +744,7 @@
           summary: 'Analista de Testes Sênior e QA Automation Engineer com mais de 10 anos de sólida experiência em engenharia de qualidade de software, com forte atuação em liderança técnica e automação de testes funcionais e não-funcionais. Especialista na criação de robustos Test Automation Frameworks (Selenium, Cypress, Playwright, Katalon, Robot) para Web e Mobile. Amplo domínio em validação de APIs REST/SOAP com Postman, Newman e RestAssured. Atuação em sistemas de alta complexidade e missão crítica (Financeiro, Segurança Pública, Telecomunicações). Profissional certificado ISTQB CTFL, cultura Shift-Left e metodologias ágeis Scrum/Kanban com integração contínua em pipelines Jenkins e GitLab CI.',
           skills: 'Java, Python, JavaScript, Ruby, SQL, COBOL, TypeScript, HTML, CSS',
           frameworks: 'Selenium WebDriver, Cypress, Playwright, Katalon Studio, Robot Framework, Cucumber, JUnit, Behave, Capybara, RestAssured, LeanFT',
-          tools: 'Postman, Newman, Apidog, Swagger/OpenAPI, SoapUI, JMeter, Jenkins, Git, GitHub, GitLab CI, Jira, Redmine, TestLink, QASE, IBM RQM, Zephir, SonarQube, AWS, Docker, Scrum, Kanban, Shift-Left, ISTQB, Graylog, Mainframe'
+          tools: 'Postman, Newman, Apidog, Swagger/OpenAPI, SoapUI, JMeter, Jenkins, Git, GitHub, GitLab CI, Jira, Redmine, TestLink, QASE, IBM RQM, Zephir, SonarQube, AWS, Docker, Scrum, Kanban, Shift-Left, ISTQB, Graylog, Mainframe · Idiomas: Português (Nativo), Inglês B2 (Intermediário)'
         },
         exp: [
           {
@@ -1112,7 +1112,557 @@
 
     showStep(0);
     runAtsPipeline();
+
+    // Expose internal methods to the LinkedIn PDF importer if any module is waiting for them.
+    window.__atsBuilderState = state;
+    const linkScope = window.__atsLinkedInScope;
+    if (linkScope && linkScope.form) {
+      linkScope.state = state;
+      linkScope.renderExpList = renderExpList;
+      linkScope.renderEduList = renderEduList || (typeof renderEduList === 'undefined' ? function() {} : renderEduList);
+      linkScope.renderCertList = renderCertList || (typeof renderCertList === 'undefined' ? function() {} : renderCertList);
+      linkScope.saveState = saveState;
+      linkScope.runAtsPipeline = runAtsPipeline;
+    }
   }
+
+  /* ========================================================================
+     LinkedIn PDF Parser Engine + Import Flow
+     ======================================================================== */
+  function initLinkedInPdfImport(scope) {
+    if (!scope || !scope.form) return;
+
+    const form = scope.form;
+    const elsImport = {
+      input: document.getElementById('atsFileInput'),
+      panel: document.getElementById('atsImportPanel'),
+      dropzone: document.getElementById('atsDropzone'),
+      progress: document.querySelector('#atsImportPanel .ats-import__progress'),
+      progressBar: document.getElementById('atsProgressBar'),
+      progressText: document.getElementById('atsProgressText'),
+      error: document.getElementById('atsImportError'),
+      review: document.getElementById('atsImportReview'),
+      reviewStats: document.getElementById('atsImportStats'),
+      reviewClose: document.getElementById('atsImportCloseBtn'),
+      thanks: document.getElementById('atsThanksBanner'),
+      pixValue: document.getElementById('pixValue'),
+      pixCopyBtn: document.getElementById('pixCopyBtn')
+    };
+
+    const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+    const REQUIRED_KWS_FOR_LI = [
+      /linkedin/i, /experience/i, /educa(ç|c)a/i, /education/i, /profile/i, /summary/i, /about/i
+    ];
+
+    // --------- Helpers ---------
+    function showError(msg) {
+      if (!elsImport.error) return;
+      elsImport.error.textContent = '❌ ' + msg;
+      elsImport.error.hidden = false;
+    }
+
+    function clearError() {
+      if (elsImport.error) { elsImport.error.hidden = true; elsImport.error.textContent = ''; }
+    }
+
+    function setProgress(percent, text) {
+      if (!elsImport.progress) return;
+      elsImport.progress.hidden = false;
+      if (elsImport.progressBar) elsImport.progressBar.style.width = String(percent) + '%';
+      if (elsImport.progressText) elsImport.progressText.textContent = text || '';
+    }
+
+    function hideProgress() {
+      if (elsImport.progress) elsImport.progress.hidden = true;
+    }
+
+    function showThanksBanner() {
+      if (!elsImport.thanks) return;
+      elsImport.thanks.hidden = false;
+      elsImport.thanks.scrollIntoView && elsImport.thanks.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Pix copy
+    if (elsImport.pixValue && elsImport.pixCopyBtn) {
+      var doCopyPix = function () {
+        if (!elsImport.pixValue) return;
+        var v = elsImport.pixValue.textContent.replace(/[^\d]/g, '');
+        var ok = false;
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(v);
+            ok = true;
+          } else {
+            var ta = document.createElement('textarea');
+            ta.value = v; document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); ok = true; } catch (_) {}
+            document.body.removeChild(ta);
+          }
+        } catch (_) {}
+        if (ok) {
+          elsImport.pixValue.classList.add('copied');
+          setTimeout(function () { elsImport.pixValue && elsImport.pixValue.classList.remove('copied'); }, 1600);
+          if (elsImport.pixCopyBtn) {
+            var orig = elsImport.pixCopyBtn.textContent;
+            elsImport.pixCopyBtn.textContent = '✓ Copiado!';
+            setTimeout(function () { elsImport.pixCopyBtn && (elsImport.pixCopyBtn.textContent = orig); }, 1500);
+          }
+        }
+      };
+      elsImport.pixValue.addEventListener('click', doCopyPix);
+      elsImport.pixCopyBtn.addEventListener('click', doCopyPix);
+    }
+
+    if (elsImport.reviewClose) {
+      elsImport.reviewClose.addEventListener('click', function () {
+        if (elsImport.review) elsImport.review.hidden = true;
+        showThanksBanner();
+      });
+    }
+
+    // --------- Validation ---------
+    function validateFile(file) {
+      if (!file) return 'Nenhum arquivo selecionado.';
+      if (file.type && file.type !== 'application/pdf') return 'Formato inválido. Apenas arquivos PDF exportados do LinkedIn são aceitos.';
+      if (!/\.pdf$/i.test(file.name || '')) return 'Extensão inválida. Por favor, selecione um arquivo .pdf.';
+      if (file.size > MAX_SIZE_BYTES) return 'Arquivo muito grande. Limite de 10MB. Tente exportar novamente o PDF do LinkedIn sem anexos extras.';
+      return null;
+    }
+
+    // --------- PDF extract text ---------
+    function extractPdfText(file) {
+      return new Promise(function (resolve, reject) {
+        if (!window['pdfjsLib']) return reject(new Error('PDF.js não carregado. Verifique sua conexão com a internet e tente novamente.'));
+        // worker is bundled inline via CDN build v3 - no external worker.
+        var reader = new FileReader();
+        reader.onerror = function () { reject(new Error('Falha ao ler o arquivo selecionado. Tente novamente.')); };
+        reader.onload = function () {
+          var typedArray = new Uint8Array(reader.result);
+          window['pdfjsLib'].getDocument({ data: typedArray }).promise.then(function (pdf) {
+            setProgress(8, 'PDF carregado (' + pdf.numPages + ' páginas)...');
+            var pages = [];
+            for (var i = 1; i <= pdf.numPages; i++) pages.push(i);
+            var acc = [];
+            pages.reduce(function (prev, pNum, idx) {
+              return prev.then(function () {
+                return pdf.getPage(pNum).then(function (page) {
+                  setProgress(Math.round(8 + ((idx + 1) / pages.length) * 72), 'Processando página ' + pNum + ' / ' + pages.length + '...');
+                  return page.getTextContent({ normalizeWhitespace: true, disableCombineTextItems: false });
+                }).then(function (content) {
+                  var text = '';
+                  var lastY = null;
+                  content.items.forEach(function (item) {
+                    var transform = item.transform || [0, 0, 0, 0, 0, 0];
+                    var y = transform[5];
+                    if (lastY !== null && Math.abs(y - lastY) > 2) text += '\n';
+                    else if (lastY !== null) text += ' ';
+                    text += item.str || '';
+                    lastY = y;
+                  });
+                  acc.push(text);
+                  return Promise.resolve();
+                });
+              });
+            }, Promise.resolve()).then(function () {
+              setProgress(84, 'Extração concluída. Analisando seções padrões do LinkedIn...');
+              hideProgress();
+              resolve(acc.join('\n'));
+            }).catch(function (err) {
+              hideProgress();
+              reject(new Error('Páginas ilegíveis. PDF pode estar protegido por senha ou corrompido. Detalhes: ' + (err.message || err)));
+            });
+          }).catch(function (err) {
+            hideProgress();
+            reject(new Error('Não foi possível abrir este PDF. Verifique se o arquivo não está protegido por senha (PDF criptografado não é suportado). Erro: ' + (err.message || err)));
+          });
+        };
+        reader.readAsArrayBuffer(file);
+      });
+    }
+
+    // --------- LinkedIn Section Parser ---------
+    // The official LinkedIn PDF uses standardized section headers - EN/PT-BR/ES
+    function detectLinkedInText(text) {
+      var ok = REQUIRED_KWS_FOR_LI.filter(function (r) { return r.test(text || ''); }).length;
+      return ok >= 3; // at least 3 typical LI keywords
+    }
+
+    // Section headers we look for in the PDF text (multilang)
+    var SECTION_HEADERS = [
+      { key: 'experience', re: /^\s*(?:Experi[êe]ncia|Experience|Exp\.\s*Profissional|Experiencia profesional)\s*$/mi },
+      { key: 'education', re: /^\s*(?:Educa[çc][aã]o|Education|Forma[çc][aã]o acad[êe]mica|Educación|Formazione)\s*$/mi },
+      { key: 'certifications', re: /^\s*(?:Certifica[çc][õo]es|Certifications|Licen[çc]as e certifica[çc][õo]es|Licenses & Certifications|Diplomas y certificaciones)\s*$/mi },
+      { key: 'skills', re: /^\s*(?:Compet[êe]ncias|Skills|Habilidades|Competencias|Aptitudes|Top skills)\s*$/mi },
+      { key: 'languages', re: /^\s*(?:Idiomas|Languages|Línguas|Lenguages)\s*$/mi },
+      { key: 'projects', re: /^\s*(?:Projetos|Projects|Proyectos)\s*$/mi },
+      { key: 'summary', re: /^\s*(?:Sobre|Summary|Extrato profissional|Acerca de|Sobre mim|About)\s*$/mi }
+    ];
+
+    function splitSections(text) {
+      var sections = { preamble: '', text: text };
+      var lines = (text || '').split(/\r?\n/);
+      var current = 'preamble';
+      SECTION_HEADERS.forEach(function (h) { sections[h.key] = ''; });
+      lines.forEach(function (rawLine) {
+        var line = rawLine;
+        var matched = false;
+        for (var i = 0; i < SECTION_HEADERS.length && !matched; i++) {
+          if (SECTION_HEADERS[i].re.test(line)) {
+            current = SECTION_HEADERS[i].key;
+            matched = true;
+          }
+        }
+        if (!matched) {
+          if (current === 'preamble') sections.preamble += line + '\n';
+          else sections[current] = (sections[current] || '') + line + '\n';
+        }
+      });
+      return sections;
+    }
+
+    // --------- Field parsers ---------
+    function parseName(preamble) {
+      // Top of LinkedIn PDF: first line is usually the profile name (2+ words, caps mix).
+      // Skip obvious urls/emails/phone numbers.
+      var lines = preamble.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+      for (var i = 0; i < Math.min(lines.length, 10); i++) {
+        var l = lines[i];
+        if (/^mailto:|^Contact$|^LinkedIn|^https?:|linkedin\.com/i.test(l)) continue;
+        if (l.length < 4 || l.length > 60) continue;
+        if (/[.,@\d]{4,}/.test(l) && !/[A-Za-z][A-Za-z]/.test(l)) continue;
+        var words = l.split(/\s+/).filter(function (w) { return w.length > 1; });
+        if (words.length >= 2 && /^[A-Za-zÀ-ÖØ-öø-ÿ'\s\-]+$/.test(l)) return l;
+      }
+      return '';
+    }
+
+    function parseContact(preamble, text) {
+      var out = { email: '', phone: '', linkedin: '', location: '' };
+      var allText = (preamble + '\n' + (text || '')).replace(/mailto:/gi, '');
+      var emailMatch = allText.match(/[\w.+-]{1,}@[\w-]{1,}\.[A-Za-z.]{2,}/);
+      if (emailMatch) out.email = emailMatch[0];
+      var phoneMatch = allText.match(/(?:\+?\s*\d{1,3}[\s.\-]?)?(?:\(?\s*\d{2,3}\s*\)?[\s.\-]?)?(?:\d[\s.\-]?){8,11}\d/);
+      if (phoneMatch && /\d/.test(phoneMatch[0])) out.phone = phoneMatch[0];
+      var liMatch = allText.match(/linkedin\.com\/(?:in|pub)\/[^\s,]+/i);
+      if (liMatch) out.linkedin = 'https://' + liMatch[0].replace(/\/+$/, '');
+      // Location: usually between name and contact section (e.g. "Brasília e Região")
+      var lines = preamble.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+      var locRe = /^([A-ZÀ-Ý][A-Za-zÀ-ÿ '’\-]{2,}(?:\s*[,&\-]\s*[A-ZÀ-Ý][A-Za-zÀ-ÿ '’\-]{1,}){0,3}(?:\s+(?:Area|Região|Region|e\s+Região))?)$/;
+      for (var i = 0; i < Math.min(lines.length, 15); i++) {
+        if (locRe.test(lines[i]) && !/^Contact|^About|^Summary/.test(lines[i])) {
+          out.location = lines[i]; break;
+        }
+      }
+      return out;
+    }
+
+    function parseRoleCandidate(preamble) {
+      var lines = preamble.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+      // Look for lines with seniority terms after the name
+      var roleKw = /(Analista|Engenheir|Engineer|QA|Lead|Sênior|Senior|Junior|Pleno|Especialista|Consultor|Coordenad|Teste|Automação|Automation|SDET|Quality|Software|Manager)/i;
+      for (var i = 1; i < Math.min(lines.length, 15); i++) {
+        var l = lines[i];
+        if (l.length >= 8 && l.length <= 100 && roleKw.test(l)) return l;
+      }
+      return '';
+    }
+
+    function parseExperience(text) {
+      if (!text) return [];
+      // LinkedIn PDF experience blocks typically look like:
+      //   Company Name
+      //   Title
+      //   Dates (location)?
+      //   Description lines...
+      var entries = [];
+      var raw = text.replace(/\s+\n/g, '\n').replace(/\n{3,}/g, '\n\n');
+      // Split by blank lines then rebuild blocks heuristically.
+      var chunks = raw.split(/\n\s*\n/).map(function (c) { return c.trim(); }).filter(Boolean);
+      var i = 0;
+      while (i < chunks.length) {
+        var block = chunks[i];
+        var lines = block.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+        // Strip "Page X of Y" lines
+        lines = lines.filter(function (l) { return !/^Page\s+\d+\s+(of|de)\s+\d+$/i.test(l); });
+        if (lines.length < 2) { i++; continue; }
+        var company = '';
+        var title = '';
+        var period = '';
+        var location = '';
+        var bullets = '';
+        // Heuristic: 1st significant line = Company, 2nd = Title, lines with duration patterns = Period+Location, rest = bullets
+        var durRe = /(?:Jan|Fev|Mar|Abr|Mai|Jun|Jul|Ago|Set|Out|Nov|Dez|January|February|March|April|May|June|July|August|September|October|November|December|Ene|Feb|Mar|Abr|May|Jun|Jul|Ago|Sep|Oct|Nov|Dic|Presente|Atual|Actual|o momento|Present|moment|de)\b.*(?:\d{4}|\d{4}|\baté\b|\bto\b|-|–|—).*\d{4}?/i;
+        var cursor = 0;
+        if (lines.length >= 1) { company = lines[cursor++]; }
+        if (lines.length >= 2 && !durRe.test(lines[cursor])) { title = lines[cursor++]; }
+        if (lines.length > cursor && durRe.test(lines[cursor])) {
+          var pl = lines[cursor++];
+          // Some formats have "Period · Location" on same line
+          var parts = pl.split(/\s·\s|\s{2,}|,\s*(?=Brasil|Brazil|Remoto|Remote)/);
+          period = parts[0] || pl;
+          if (parts.length > 1) location = parts.slice(1).join(' · ').trim();
+        }
+        if (lines.length > cursor) {
+          bullets = lines.slice(cursor).map(function (b) {
+            if (/^[•\-\*\d\.\)\s]+/.test(b)) return b.replace(/^[•\-\*\d\.\)\s]+/, '• ');
+            return '• ' + b;
+          }).join('\n');
+        }
+        if (company && (title || bullets || period)) {
+          entries.push({ company: company, role: title, period: period, location: location, bullets: bullets });
+        }
+        i++;
+      }
+      return entries.slice(0, 10);
+    }
+
+    function parseEducation(text) {
+      if (!text) return [];
+      var entries = [];
+      var raw = text.replace(/\n{3,}/g, '\n\n');
+      var chunks = raw.split(/\n\s*\n/).map(function (c) { return c.trim(); }).filter(Boolean);
+      chunks.forEach(function (block) {
+        var lines = block.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+        if (lines.length === 0) return;
+        var inst = lines[0] || '';
+        var course = lines.length >= 2 ? lines[1] : '';
+        var period = '';
+        var extra = '';
+        var yearRe = /\d{4}\s*(?:[-–—]\s*\d{4})?/;
+        for (var i = 2; i < lines.length; i++) {
+          if (!period && yearRe.test(lines[i])) period = lines[i];
+          else extra += (extra ? '; ' : '') + lines[i];
+        }
+        if (inst || course) entries.push({ institution: inst, course: course, period: period, extra: extra });
+      });
+      return entries.slice(0, 8);
+    }
+
+    function parseCertifications(text) {
+      if (!text) return [];
+      var entries = [];
+      var lines = text.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+      var cur = null;
+      lines.forEach(function (l) {
+        if (/^Page\s+\d+/i.test(l)) return;
+        // Heuristic: 1st line = cert name; 2nd = issuer; 3rd = year-ish; next = new entry.
+        if (!cur) {
+          cur = { name: l, issuer: '', year: '' };
+        } else if (!cur.issuer) {
+          cur.issuer = l;
+        } else if (!cur.year && /\d{4}/.test(l)) {
+          var yearMatch = l.match(/\d{4}/);
+          cur.year = yearMatch ? yearMatch[0] : l;
+          entries.push(cur); cur = null;
+        } else {
+          // new entry detected
+          entries.push(cur);
+          cur = { name: l, issuer: '', year: '' };
+        }
+      });
+      if (cur && (cur.name || cur.issuer)) entries.push(cur);
+      return entries.slice(0, 15);
+    }
+
+    function parseSkills(text) {
+      if (!text) return '';
+      var raw = text.replace(/\s*\n\s*/g, ', ').replace(/\t/g, ' ');
+      return raw.replace(/\s{2,}/g, ' ').trim();
+    }
+
+    function parseSummary(text) {
+      if (!text) return '';
+      var lines = text.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean).filter(function (l) { return !/^Page\s+\d+/i.test(l); });
+      return lines.join(' ').trim();
+    }
+
+    function parseLanguages(text) {
+      if (!text) return '';
+      return text.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(function (l) { return l && !/^Page\s+\d+/i.test(l); }).join(', ').trim();
+    }
+
+    function parseProjects(text) {
+      if (!text) return [];
+      return text.split(/\n\s*\n/).map(function (c) { return c.trim(); }).filter(Boolean).slice(0, 10);
+    }
+
+    function runParser(rawText) {
+      var sections = splitSections(rawText || '');
+      var contact = parseContact(sections.preamble, rawText || '');
+      var name = parseName(sections.preamble);
+      var role = parseRoleCandidate(sections.preamble);
+      var summary = parseSummary(sections.summary);
+      var experiences = parseExperience(sections.experience);
+      var educations = parseEducation(sections.education);
+      var certifications = parseCertifications(sections.certifications);
+      var skillsRaw = parseSkills(sections.skills);
+      var languages = parseLanguages(sections.languages);
+      if (!name && !contact.email && experiences.length === 0) {
+        return { error: 'Estrutura de PDF do LinkedIn não reconhecida. Verifique se você exportou o PDF diretamente do seu perfil (Configurações > Dados do perfil > Baixar PDF).' };
+      }
+      var out = {
+        form: {
+          fullName: name || '',
+          role: role || '',
+          email: contact.email || '',
+          phone: contact.phone || '',
+          location: contact.location || '',
+          linkedin: contact.linkedin || '',
+          portfolio: '',
+          summary: summary || '',
+          skills: skillsRaw || '',
+          frameworks: '',
+          tools: languages ? 'Idiomas: ' + languages : ''
+        },
+        exp: experiences,
+        edu: educations,
+        cert: certifications
+      };
+      return { sections: sections, data: out };
+    }
+
+    // --------- Apply parsed data to ATS Builder form + dynamic lists ---------
+    function applyParsedDataToBuilder(res) {
+      // Clear current state first
+      scope.state = scope.state || { exp: [], edu: [], cert: [], form: {}, currentStep: 0 };
+      scope.state.exp = (res.data.exp && res.data.exp.length) ? res.data.exp : [{ company: '', role: '', period: '', location: '', bullets: '' }];
+      scope.state.edu = (res.data.edu && res.data.edu.length) ? res.data.edu : [{ institution: '', course: '', period: '', extra: '' }];
+      scope.state.cert = (res.data.cert && res.data.cert.length) ? res.data.cert : [{ name: '', issuer: '', year: '' }];
+
+      // Populate form fields
+      Object.keys(res.data.form || {}).forEach(function (key) {
+        var inp = scope.form.querySelector('[name="' + key + '"]');
+        if (inp) inp.value = res.data.form[key] || '';
+      });
+      // Update summary counter
+      var sumInp = scope.form.querySelector('[name="summary"]');
+      var summaryCountEl = document.getElementById('summaryCount');
+      if (sumInp && summaryCountEl) summaryCountEl.textContent = String(sumInp.value.length);
+
+      // Render dynamic lists using the scope's render functions
+      if (typeof scope.renderExpList === 'function') scope.renderExpList();
+      if (typeof scope.renderEduList === 'function') scope.renderEduList();
+      if (typeof scope.renderCertList === 'function') scope.renderCertList();
+
+      // Save + run pipeline
+      if (typeof scope.saveState === 'function') scope.saveState();
+      if (typeof scope.runAtsPipeline === 'function') scope.runAtsPipeline();
+
+      return res.data;
+    }
+
+    // --------- Review stats ---------
+    function buildReviewStats(parsed) {
+      var d = parsed.data || {};
+      var f = d.form || {};
+      var stats = [];
+      function add(label, status, value) { stats.push({ label: label, status: status, value: value }); }
+      add('Nome completo', f.fullName ? 'mapped' : 'fail', f.fullName ? 'Encontrado' : 'Faltando');
+      add('Cargo', f.role ? 'mapped' : 'warn', f.role ? 'Detectado' : 'Preencher');
+      add('E-mail', f.email ? 'mapped' : 'fail', f.email ? f.email : 'Faltando');
+      add('Telefone', f.phone ? 'mapped' : 'warn', f.phone ? 'OK' : 'N/D');
+      add('LinkedIn', f.linkedin ? 'mapped' : 'warn', f.linkedin ? 'OK' : 'N/D');
+      add('Resumo / Sobre', (f.summary || '').length > 80 ? 'mapped' : 'warn', (f.summary || '').length + ' chars');
+      add('Habilidades', (f.skills || '').length > 20 ? 'mapped' : 'warn', (f.skills || '').split(/[,\n]/).filter(Boolean).length + ' itens');
+      add('Experiência', ((d.exp && d.exp.length) || 0) >= 2 ? 'mapped' : 'warn', (d.exp && d.exp.length) + ' cargos');
+      add('Formação', (d.edu && d.edu.length) ? 'mapped' : 'warn', (d.edu && d.edu.length) + ' cursos');
+      add('Certificações', (d.cert && d.cert.length) ? 'mapped' : 'warn', (d.cert && d.cert.length) + ' certs');
+      return stats;
+    }
+
+    function renderReview(stats) {
+      if (!elsImport.reviewStats) return;
+      elsImport.reviewStats.innerHTML = stats.map(function (s) {
+        return '<div class="ats-stat ' + s.status + '">' +
+          '<div class="ats-stat__label">' + s.label + '</div>' +
+          '<div class="ats-stat__value">' + escapeHtml(s.value) + '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    // --------- File handler ---------
+    function handleFile(file) {
+      clearError();
+      var validationError = validateFile(file);
+      if (validationError) { showError(validationError); return; }
+      if (elsImport.panel) elsImport.panel.hidden = false;
+      setProgress(2, 'Lendo arquivo ' + (file.name || '') + '...');
+      extractPdfText(file).then(function (rawText) {
+        setProgress(88, 'Validando estrutura padrão do LinkedIn...');
+        if (!detectLinkedInText(rawText)) {
+          hideProgress();
+          showError('Este PDF não parece ser a exportação oficial de um perfil do LinkedIn. Por favor, use a opção "Mais → Baixar PDF do perfil" diretamente no site do LinkedIn.');
+          return;
+        }
+        var parsed = runParser(rawText);
+        if (parsed.error) {
+          hideProgress();
+          showError(parsed.error);
+          return;
+        }
+        setProgress(95, 'Mapeando campos para a plataforma ATS Builder...');
+        applyParsedDataToBuilder(parsed);
+        var stats = buildReviewStats(parsed);
+        renderReview(stats);
+        if (elsImport.review) elsImport.review.hidden = false;
+        if (elsImport.dropzone) elsImport.dropzone.hidden = true;
+        hideProgress();
+        setTimeout(showThanksBanner, 700);
+      }).catch(function (err) {
+        hideProgress();
+        showError(err.message || String(err));
+      });
+    }
+
+    // --------- Wire UI ---------
+    if (elsImport.input) {
+      elsImport.input.addEventListener('change', function (ev) {
+        var file = ev.target.files && ev.target.files[0];
+        handleFile(file);
+        // Reset so user can re-select the same file if needed
+        ev.target.value = '';
+      });
+    }
+
+    if (elsImport.dropzone) {
+      // Click = open file dialog too
+      elsImport.dropzone.addEventListener('click', function () {
+        elsImport.input && elsImport.input.click();
+      });
+      elsImport.dropzone.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); elsImport.input && elsImport.input.click(); }
+      });
+      ['dragenter', 'dragover'].forEach(function (evt) {
+        elsImport.dropzone.addEventListener(evt, function (ev) {
+          ev.preventDefault(); ev.stopPropagation();
+          elsImport.dropzone.classList.add('dragover');
+          if (elsImport.panel) elsImport.panel.hidden = false;
+        });
+      });
+      ['dragleave', 'dragexit', 'drop'].forEach(function (evt) {
+        elsImport.dropzone.addEventListener(evt, function (ev) {
+          ev.preventDefault(); ev.stopPropagation();
+          elsImport.dropzone.classList.remove('dragover');
+        });
+      });
+      elsImport.dropzone.addEventListener('drop', function (ev) {
+        var file = ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files[0];
+        handleFile(file);
+      });
+    }
+  }
+
+  // Save the scope globally so initAtsBuilder() (which runs after) can inject its internal methods.
+  window.__atsLinkedInScope = {
+    form: document.getElementById('atsForm'),
+    state: (window.__atsBuilderState = window.__atsBuilderState || null),
+    renderExpList: null,
+    renderEduList: null,
+    renderCertList: null,
+    saveState: null,
+    runAtsPipeline: null
+  };
+  initLinkedInPdfImport(window.__atsLinkedInScope);
 
   initAtsBuilder();
 

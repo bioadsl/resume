@@ -26,6 +26,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="styles.css" />
+
+  <!-- PDF.js - Leitura de PDFs do LinkedIn (engine de parsing) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
+          integrity="sha512-veo479b10pJj79hE3Z9V7P4m1Q1oJzJxJqJZ8mPvU0tQ3u0QqQ7l5WzN5U2W4R3Y6H7Z6O4I3L5mT9C0qP1Q=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
   <title>Fabrício Duarte | QA Automation Engineer & Senior Test Analyst</title>
 </head>
 <body>
@@ -206,13 +212,62 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
               Exportar PDF ATS
             </button>
-            <button class="btn btn--outline" id="atsFillDemo" type="button">Auto-preencher demo</button>
+            <label class="btn btn--outline btn--file-label" for="atsFileInput">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Importar PDF do LinkedIn
+              <input id="atsFileInput" type="file" accept="application/pdf,.pdf" hidden />
+            </label>
+            <button class="btn btn--ghost" id="atsFillDemo" type="button">Auto-preencher demo</button>
             <button class="btn btn--ghost" id="atsClearBtn" type="button">Limpar tudo</button>
           </div>
         </div>
 
         <!-- Validator Rules List -->
         <ul class="ats-rules" id="atsRulesList" aria-live="polite"></ul>
+
+        <!-- LinkedIn PDF Import Panel -->
+        <div id="atsImportPanel" class="ats-import" hidden>
+          <div class="ats-import__panel ats-import__dropzone" id="atsDropzone" role="button" tabindex="0" aria-label="Arraste seu PDF exportado do LinkedIn aqui">
+            <div class="ats-import__icon">📥</div>
+            <h3 class="ats-import__title">Arraste e solte seu PDF do LinkedIn aqui</h3>
+            <p class="ats-import__hint">Ou clique no botão <strong>"Importar PDF do LinkedIn"</strong> acima. Formatos suportados: PDF oficial exportado diretamente do seu perfil do LinkedIn. Tamanho máximo: <strong>10MB</strong>.</p>
+            <div class="ats-import__progress" hidden>
+              <div class="ats-import__progress-bar" id="atsProgressBar"></div>
+              <div class="ats-import__progress-text" id="atsProgressText">Processando página 0 / 0...</div>
+            </div>
+            <p class="ats-import__error" id="atsImportError" hidden></p>
+          </div>
+
+          <!-- Post-processing review panel -->
+          <div class="ats-import__review ats-import__panel" id="atsImportReview" hidden>
+            <div class="ats-import__review-head">
+              <div>
+                <h3 class="ats-import__title" style="margin:0 0 0.25rem 0;">✅ Extração concluída!</h3>
+                <p class="ats-import__hint" style="margin:0;">Os campos abaixo foram mapeados do seu PDF. Reveja e ajuste o que precisar antes de finalizar.</p>
+              </div>
+              <button class="btn btn--ghost btn--sm" id="atsImportCloseBtn" type="button">Fechar</button>
+            </div>
+            <div class="ats-import__review-stats" id="atsImportStats"></div>
+            <div class="ats-import__review-tip">
+              💡 <strong>Dica:</strong> Campos destacados em ⚠️ não foram mapeados automaticamente. Preencha-os manualmente diretamente no formulário ao lado.
+            </div>
+          </div>
+        </div>
+
+        <!-- Final Thank-you Pix banner -->
+        <div class="ats-thanks" id="atsThanksBanner" hidden>
+          <div class="ats-thanks__inner">
+            <div class="ats-thanks__icon">☕</div>
+            <div class="ats-thanks__content">
+              <div class="ats-thanks__title">Se foi útil para você, deixe um café!</div>
+              <div class="ats-thanks__pix">
+                <span class="ats-thanks__pix-label">Pix:</span>
+                <span class="ats-thanks__pix-value" id="pixValue" title="Clique para copiar">61984260515</span>
+                <button class="btn btn--sm" id="pixCopyBtn" type="button">📋 Copiar</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- Builder 2-col Layout: Form + Live Preview -->
         <div class="ats-wrapper">

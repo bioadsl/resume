@@ -43,6 +43,11 @@
         "name": "Metodologias & Ferramentas",
         "icon": "📋",
         "items": ["Scrum", "Kanban", "Shift-Left Testing", "ISTQB", "Jira", "Redmine", "TestLink", "QASE", "TFS", "IBM RQM", "RQM", "JMeter", "Graylog", "Mainframe", "Zephir", "LeanFT"]
+      },
+      {
+        "name": "Idiomas",
+        "icon": "🌍",
+        "items": ["Português (Nativo)", "Inglês B2 (Intermediário)"]
       }
     ]
   },
