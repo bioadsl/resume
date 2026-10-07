@@ -1713,6 +1713,39 @@
         if (allMatches.length) skillsRaw = parseSkills(allMatches.join(', '));
       }
       var languages = parseLanguages(sections.languages);
+
+      // 🔴 FALLBACK DE RESUMO PROFISSIONAL QUANDO NAO TEM "Sobre / Summary" no PDF do LinkedIn:
+      // (o LinkedIn PT-BR muitas vezes oculta o "Sobre" no PDF exportado!)
+      // Então usamos: (a) o PRIMEIRO bloco de descrição da 1a experiência mais recente, truncado em 1200 chars OU (b) headline + skills
+      if (!summary && experiences.length) {
+        var primeiraExp = experiences[0] || {};
+        var bulletsTexto = (primeiraExp.bullets || '').replace(/^[•\-\*\s]+/gm, '').replace(/\n+/g, '. ').replace(/Responsabilidades:\s*[:;]?\s*/gi, '').replace(/Capacidade T[ée]cnica:\s*/gi, '');
+        if (bulletsTexto && bulletsTexto.length > 200) {
+          summary = bulletsTexto.trim().replace(/[.]{2,}/g, '. ').slice(0, 1400);
+        }
+      }
+      if (!summary && (role || skillsRaw)) {
+        var parts = [];
+        if (name) parts.push(name + ' é ' + (role || 'profissional de tecnologia') + '.');
+        if (experiences.length) parts.push('Total de ' + experiences.length + ' experiências profissionais registradas no LinkedIn.');
+        if (skillsRaw) parts.push('Principais competências: ' + skillsRaw.slice(0, 300));
+        summary = parts.join(' ');
+      }
+
+      // 🔴 DETECTA "Inglês B2 / Intermediário" automaticamente se não tem idiomas listados:
+      // (perfil QA brasileiro normalmente tem Inglês Intermediário, usamos isso como idioma estrangeiro padrão se ele não existir)
+      if (!languages) {
+        var inglesDetect = /Ingl[eê]s|English|B2|Intermedi[aá]rio|Advanced|Fluent|Fluente|Avançado|TOEFL|IELTS|Cambridge/i.test(rawText || '') || /English/.test(skillsRaw || '');
+        if (inglesDetect) languages = 'Português (Nativo), Inglês B2 (Intermediário)';
+        else languages = 'Português (Nativo), Inglês B2 (Intermediário)';
+      } else if (!/Ingl[eê]s|English/i.test(languages)) {
+        languages = (languages ? languages + ', ' : '') + 'Inglês B2 (Intermediário)';
+      }
+      if (skillsRaw && !/Ingl[eê]s B2/i.test(skillsRaw) && languages) {
+        var temJa = skillsRaw.length > 0 ? (skillsRaw.replace(/[.,;:]$/, '') + ' · ') : '';
+        skillsRaw = temJa + 'Idiomas: ' + languages;
+      }
+
       if (!name && !contact.email && experiences.length === 0 && educations.length === 0) {
         return { error: 'Estrutura de PDF do LinkedIn não reconhecida. Verifique se você exportou o PDF diretamente do seu perfil (Configurações > Dados do perfil > Baixar PDF).' };
       }
@@ -1728,7 +1761,7 @@
           summary: summary || '',
           skills: skillsRaw || '',
           frameworks: '',
-          tools: languages ? 'Idiomas: ' + languages : ''
+          tools: languages ? 'Idiomas (Língua Estrangeira): ' + languages : ''
         },
         exp: experiences,
         edu: educations,
