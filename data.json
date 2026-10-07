@@ -55,7 +55,6 @@
       "highlights": [
         "Otimizei a estabilidade e a confiabilidade de plataformas globais que conectam bilhões de usuários, por meio do desenvolvimento e manutenção contínua de frameworks de automação de testes de alta performance.",
         "Garanti a integridade de contratos e regras de negócio em arquiteturas de microserviços escaláveis, realizando validações rigorosas e testes automatizados de APIs REST utilizando Postman, Newman e RestAssured.",
-        "Reduzi o Time-to-Market em squads multidisciplinares de alta performance, aplicando práticas ágeis com Scrum/Kanban e integrando suítes de testes regressivos, funcionais e de integração ao pipeline de CI/CD.",
         "Mitiguei riscos em produção através de processos avançados de Data Validation, manipulando grandes volumes de dados em bancos Oracle, DB2, PostgreSQL e MySQL para a criação de cenários de teste complexos."
       ]
     },
@@ -103,7 +102,7 @@
       "location": "Brasília, DF",
       "highlights": [
         "Assegurei a integridade financeira e a conformidade de rotinas críticas legadas na Caixa Econômica Federal, planejando e executando testes em programas COBOL focados no processamento batch de arquivos de remessa.",
-        "Mitiguei riscos em sistemas de segurança nacional da Polícia Federal, realizando análise técnica antecipada baseada em artefatos UML e diagramas de processo.",
+        "Mitiguei riscos em sistemas de segurança nacional da Polícia Federal, realizando análise técnica antecipada baseada em documentos de caso de uso, regras de negocio, testes de carga e performance.",
         "Aumentei a cobertura de testes funcionais e regressivos, construindo scripts de automação multistack utilizando Java (JUnit), Ruby (Capybara/Cucumber) e frameworks como Selenium e Katalon.",
         "Gerenciei o ciclo de defeitos e a geração de evidências regulatórias rigorosas para stakeholders, utilizando as plataformas IBM RQM e TestLink de maneira integrada ao Jenkins."
       ]
