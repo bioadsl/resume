@@ -1149,7 +1149,11 @@
       reviewClose: document.getElementById('atsImportCloseBtn'),
       thanks: document.getElementById('atsThanksBanner'),
       pixValue: document.getElementById('pixValue'),
-      pixCopyBtn: document.getElementById('pixCopyBtn')
+      pixCopyBtn: document.getElementById('pixCopyBtn'),
+      compact: document.getElementById('atsImportCompact'),
+      compactFile: document.getElementById('atsCompactFile'),
+      compactSub: document.getElementById('atsCompactSub'),
+      reuploadBtn: document.getElementById('atsReuploadBtn')
     };
 
     const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
@@ -1819,33 +1823,117 @@
       return stats;
     }
 
+    const STAT_STEP_HINTS = {
+      'Nome completo': { step: 0, btn: 'Ir para Dados Pessoais →' },
+      'Cargo': { step: 0, btn: 'Ir para Dados Pessoais →' },
+      'E-mail': { step: 0, btn: 'Ir para Dados Pessoais →' },
+      'Telefone': { step: 0, btn: 'Ir para Dados Pessoais →' },
+      'LinkedIn': { step: 0, btn: 'Ir para Dados Pessoais →' },
+      'Resumo / Sobre': { step: 1, btn: 'Ir para Resumo →' },
+      'Habilidades': { step: 2, btn: 'Ir para Habilidades →' },
+      'Experiência': { step: 3, btn: 'Ir para Experiência →' },
+      'Formação': { step: 4, btn: 'Ir para Formação →' },
+      'Certificações': { step: 5, btn: 'Ir para Certificações →' }
+    };
+
     function renderReview(stats) {
       if (!elsImport.reviewStats) return;
-      elsImport.reviewStats.innerHTML = stats.map(function (s) {
-        return '<div class="ats-stat ' + s.status + '">' +
-          '<div class="ats-stat__label">' + s.label + '</div>' +
+      elsImport.reviewStats.innerHTML = stats.map(function (s, idx) {
+        // Monta o badge de status (não mais emoji em ::before)
+        var badgeIcon, badgeText;
+        if (s.status === 'mapped') { badgeIcon = '✅'; badgeText = 'Mapeado'; }
+        else if (s.status === 'warn') { badgeIcon = '⚠️'; badgeText = 'Preencher'; }
+        else { badgeIcon = '❌'; badgeText = 'Ausente'; }
+        var hint = STAT_STEP_HINTS[s.label];
+        var btn = '';
+        if (hint) {
+          btn = '<a href="#ats-builder" class="step-link" data-step="' + hint.step + '" data-stat-idx="' + idx + '">➜ ' + hint.btn + '</a>';
+        }
+        return '<div class="ats-stat ' + s.status + '" data-step="' + (hint ? hint.step : '') + '" data-stat-idx="' + idx + '">' +
+          '<div class="ats-stat__label">' + escapeHtml(s.label) + '</div>' +
+          '<div class="ats-stat__status-badge">' + badgeIcon + ' ' + badgeText + '</div>' +
           '<div class="ats-stat__value">' + escapeHtml(s.value) + '</div>' +
+          btn +
         '</div>';
       }).join('');
+      // Delegates: clique no card = vai ao passo + foca no primeiro input
+      elsImport.reviewStats.querySelectorAll('.ats-stat, .step-link').forEach(function (el) {
+        el.addEventListener('click', function (ev) {
+          ev.preventDefault();
+          var stepAttr = el.getAttribute('data-step');
+          if (stepAttr === '' || stepAttr == null) {
+            var parentCard = el.closest && el.closest('.ats-stat');
+            if (parentCard) stepAttr = parentCard.getAttribute('data-step');
+          }
+          if (stepAttr !== '' && stepAttr != null && typeof scope.showStep === 'function') {
+            scope.showStep(parseInt(stepAttr, 10));
+            // foca no 1º input do step para usuario já começar a editar
+            setTimeout(function () {
+              var stepEl = document.querySelector('#atsStep' + stepAttr);
+              if (stepEl) {
+                var firstField = stepEl.querySelector('input:not([type=hidden]), textarea, select');
+                if (firstField && typeof firstField.focus === 'function') firstField.focus();
+                stepEl.scrollIntoView && stepEl.scrollIntoView({ block: 'start', behavior: 'smooth' });
+              }
+            }, 60);
+          }
+        });
+      });
+    }
+
+    // --------- Toggle Estados de UI do importador ---------
+    function setImportMode(mode, opts) {
+      if (!elsImport.panel) return;
+      if (!opts) opts = {};
+      // Esconde tudo primeiro, depois exibe o que é do modo
+      if (elsImport.dropzone) elsImport.dropzone.hidden = true;
+      if (elsImport.review) elsImport.review.hidden = true;
+      if (elsImport.compact) elsImport.compact.hidden = true;
+      if (mode === 'dropzone') {
+        // Estado inicial / upload errado / reupload aberto
+        if (elsImport.dropzone) elsImport.dropzone.hidden = false;
+      } else if (mode === 'compact-review') {
+        // Extração bem sucedida: banner compacto + review full-width (100% largura)
+        if (elsImport.compact) {
+          elsImport.compact.hidden = false;
+          if (opts.fileName) elsImport.compactFile.textContent = '📄 ' + opts.fileName + (opts.fileSizeBytes ? ' · ' + humanizeBytes(opts.fileSizeBytes) : '');
+          if (opts.statsSummary) elsImport.compactSub.textContent = opts.statsSummary;
+        }
+        if (elsImport.review) elsImport.review.hidden = false;
+      }
+    }
+
+    function humanizeBytes(bytes) {
+      if (!bytes) return '';
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
     }
 
     // --------- File handler ---------
     function handleFile(file) {
       clearError();
       var validationError = validateFile(file);
-      if (validationError) { showError(validationError); return; }
+      if (validationError) {
+        setImportMode('dropzone');
+        showError(validationError);
+        return;
+      }
       if (elsImport.panel) elsImport.panel.hidden = false;
+      setImportMode('dropzone');
       setProgress(2, 'Lendo arquivo ' + (file.name || '') + '...');
       extractPdfText(file).then(function (rawText) {
         setProgress(88, 'Validando estrutura padrão do LinkedIn...');
         if (!detectLinkedInText(rawText)) {
           hideProgress();
+          setImportMode('dropzone');
           showError('Este PDF não parece ser a exportação oficial de um perfil do LinkedIn. Por favor, use a opção "Mais → Baixar PDF do perfil" diretamente no site do LinkedIn.');
           return;
         }
         var parsed = runParser(rawText);
         if (parsed.error) {
           hideProgress();
+          setImportMode('dropzone');
           showError(parsed.error);
           return;
         }
@@ -1853,12 +1941,21 @@
         applyParsedDataToBuilder(parsed);
         var stats = buildReviewStats(parsed);
         renderReview(stats);
-        if (elsImport.review) elsImport.review.hidden = false;
-        if (elsImport.dropzone) elsImport.dropzone.hidden = true;
+        // Monta resumo do que foi extraído para o banner compacto
+        var mapped = stats.filter(function (s) { return s.status === 'mapped'; }).length;
+        var total = stats.length;
+        var summaryStr = '✅ ' + mapped + '/' + total + ' campos mapeados automaticamente. Reveja abaixo e ajuste o que precisar.';
+        setImportMode('compact-review', {
+          fileName: (file && file.name) || 'profile.pdf',
+          fileSizeBytes: (file && file.size) || 0,
+          statsSummary: summaryStr
+        });
         hideProgress();
+        if (elsImport.review) elsImport.review.scrollIntoView && elsImport.review.scrollIntoView({ block: 'start', behavior: 'smooth' });
         setTimeout(showThanksBanner, 700);
       }).catch(function (err) {
         hideProgress();
+        setImportMode('dropzone');
         showError(err.message || String(err));
       });
     }
@@ -1867,16 +1964,30 @@
     if (elsImport.input) {
       elsImport.input.addEventListener('click', function () {
         if (elsImport.panel) elsImport.panel.hidden = false;
-        if (elsImport.dropzone) elsImport.dropzone.hidden = false;
-        if (elsImport.review) elsImport.review.hidden = true;
+        setImportMode('dropzone');
         clearError();
-        elsImport.dropzone && elsImport.dropzone.scrollIntoView && elsImport.dropzone.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        setTimeout(function () {
+          elsImport.dropzone && elsImport.dropzone.scrollIntoView && elsImport.dropzone.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }, 20);
       });
       elsImport.input.addEventListener('change', function (ev) {
         var file = ev.target.files && ev.target.files[0];
         handleFile(file);
         // Reset so user can re-select the same file if needed
         ev.target.value = '';
+      });
+    }
+
+    if (elsImport.reuploadBtn) {
+      elsImport.reuploadBtn.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        // Volta para o modo dropzone (mostra painel grande) e já abre o input file
+        if (elsImport.panel) elsImport.panel.hidden = false;
+        setImportMode('dropzone');
+        clearError();
+        setTimeout(function () {
+          elsImport.input && elsImport.input.click();
+        }, 30);
       });
     }
 

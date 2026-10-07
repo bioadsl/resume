@@ -234,6 +234,7 @@
 
         <!-- LinkedIn PDF Import Panel -->
         <div id="atsImportPanel" class="ats-import" hidden>
+          <!-- Estado 1: Dropzone grande (antes do upload / erros / reupload aberto) -->
           <div class="ats-import__panel ats-import__dropzone" id="atsDropzone" role="button" tabindex="0" aria-label="Arraste seu PDF exportado do LinkedIn aqui">
             <div class="ats-import__icon">📥</div>
             <h3 class="ats-import__title">Arraste e solte seu PDF do LinkedIn aqui</h3>
@@ -245,14 +246,31 @@
             <p class="ats-import__error" id="atsImportError" hidden></p>
           </div>
 
-          <!-- Post-processing review panel -->
+          <!-- Estado 2: Banner compacto + review full-width (pós-extração bem-sucedida) -->
+          <div class="ats-import__compact" id="atsImportCompact" hidden>
+            <div class="ats-import__compact-left">
+              <div class="ats-import__compact-icon">✅</div>
+              <div class="ats-import__compact-meta">
+                <div class="ats-import__compact-file" id="atsCompactFile">—</div>
+                <div class="ats-import__compact-sub" id="atsCompactSub">Extração concluída. Campos mapeados do seu perfil.</div>
+              </div>
+            </div>
+            <div class="ats-import__compact-actions">
+              <button class="btn btn--outline btn--sm" id="atsReuploadBtn" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                Enviar novo PDF
+              </button>
+              <button class="btn btn--ghost btn--sm" id="atsImportCloseBtn" type="button">Fechar</button>
+            </div>
+          </div>
+
+          <!-- Post-processing review panel (agora full-width) -->
           <div class="ats-import__review ats-import__panel" id="atsImportReview" hidden>
             <div class="ats-import__review-head">
               <div>
-                <h3 class="ats-import__title" style="margin:0 0 0.25rem 0;">✅ Extração concluída!</h3>
-                <p class="ats-import__hint" style="margin:0;">Os campos abaixo foram mapeados do seu PDF. Reveja e ajuste o que precisar antes de finalizar.</p>
+                <h3 class="ats-import__title" style="margin:0 0 0.25rem 0;">📋 Revisão dos dados extraídos</h3>
+                <p class="ats-import__hint" style="margin:0;">Os campos abaixo foram mapeados do seu PDF. Clique no link de cada item para navegar direto ao passo correspondente no formulário e ajustar o que precisar.</p>
               </div>
-              <button class="btn btn--ghost btn--sm" id="atsImportCloseBtn" type="button">Fechar</button>
             </div>
             <div class="ats-import__review-stats" id="atsImportStats"></div>
             <div class="ats-import__review-tip">
