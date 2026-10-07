@@ -1349,7 +1349,7 @@
         { re: /Projetos|Projects|Proyectos/i, weight: 2 },
         { re: /Experi[êe]ncia\s*(?:profissional)?|Experience/i, weight: 3 },
         { re: /Sobre\s*mim|Summary|About\b/i, weight: 2 },
-        { re: /(?:\(\d+\s+anos?(?:\s+\d+\s+m[eê]s(?:es)?)?\)/, weight: 1 },
+        { re: /\(\d+\s+anos?(?:\s+\d+\s+m[eê]s(?:es)?)?\)/, weight: 1 },
         { re: /(?:janeiro|fevereiro|mar[çc]o|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)\s+de\s+\d{4}/i, weight: 1 }
       ];
       var score = 0;
