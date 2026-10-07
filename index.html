@@ -41,6 +41,7 @@
         <li role="none"><a role="menuitem" href="#experience" class="nav__link">Experiência</a></li>
         <li role="none"><a role="menuitem" href="#projects" class="nav__link">Projetos</a></li>
         <li role="none"><a role="menuitem" href="#certs" class="nav__link">Certificações</a></li>
+        <li role="none"><a role="menuitem" href="#ats-builder" class="nav__link nav__link--cta">📝 ATS Builder</a></li>
       </ul>
       <div class="nav__actions">
         <button id="themeToggle" class="theme-toggle" aria-label="Alternar tema claro/escuro" title="Alternar tema">
@@ -175,6 +176,168 @@
             <h3 class="subsection__title">🏆 Certificações</h3>
             <div id="certificationsList" class="list"></div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATS Resume Builder Section -->
+    <section id="ats-builder" class="section section--alt">
+      <div class="container">
+        <div class="section__header">
+          <span class="section__eyebrow">💼 Ferramenta Profissional</span>
+          <h2 class="section__title">ATS Resume Builder · Gerador & Scanner Friendly</h2>
+          <p class="section__subtitle">Criador de currículos 100% compatível com os principais scanners e agentes de IA recrutadoras: <strong>Workday, SuccessFactors, Greenhouse, Lumesse, Taleo, Ashby</strong>. Estrutura semântica, sem tabelas aninhadas, sem imagens nem ícones no PDF final — texto puro indexável.</p>
+        </div>
+
+        <!-- ATS Validator Score Panel -->
+        <div class="ats-score" id="atsScore" role="region" aria-label="Validador ATS em tempo real">
+          <div class="ats-score__left">
+            <div class="ats-score__ring">
+              <div class="ats-score__number" id="atsScoreValue">0</div>
+              <div class="ats-score__label">pts · Score ATS</div>
+            </div>
+            <div class="ats-score__info">
+              <div class="ats-score__status" id="atsScoreStatus">Carregando análise...</div>
+              <div class="ats-score__desc" id="atsScoreDesc">Preencha o formulário ao lado para que nosso validador em tempo real analise a compatibilidade com scanners de IA.</div>
+            </div>
+          </div>
+          <div class="ats-score__actions">
+            <button class="btn btn--primary" id="atsPrintBtn" type="button" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              Exportar PDF ATS
+            </button>
+            <button class="btn btn--outline" id="atsFillDemo" type="button">Auto-preencher demo</button>
+            <button class="btn btn--ghost" id="atsClearBtn" type="button">Limpar tudo</button>
+          </div>
+        </div>
+
+        <!-- Validator Rules List -->
+        <ul class="ats-rules" id="atsRulesList" aria-live="polite"></ul>
+
+        <!-- Builder 2-col Layout: Form + Live Preview -->
+        <div class="ats-wrapper">
+
+          <!-- LEFT: Multi-step Form -->
+          <div class="ats-form">
+            <div class="ats-form__stepper" role="tablist" id="atsStepper">
+              <button class="ats-step active" data-step="0" role="tab" aria-selected="true">1. Pessoal</button>
+              <button class="ats-step" data-step="1" role="tab">2. Resumo</button>
+              <button class="ats-step" data-step="2" role="tab">3. Habilidades</button>
+              <button class="ats-step" data-step="3" role="tab">4. Experiência</button>
+              <button class="ats-step" data-step="4" role="tab">5. Formação</button>
+              <button class="ats-step" data-step="5" role="tab">6. Certificações</button>
+            </div>
+
+            <form id="atsForm" class="ats-form__panel" autocomplete="on" novalidate>
+              <!-- Step 1: Personal -->
+              <div class="ats-step__panel" data-step-panel="0">
+                <h3 class="ats-step__title">👤 Dados Pessoais</h3>
+                <p class="ats-step__hint">Evite abreviações no nome completo. Use endereço de cidade/estado — não precisa de CEP nem endereço residencial completo.</p>
+                <div class="ats-form__grid">
+                  <label class="ats-field"><span>Nome completo *</span><input name="fullName" required placeholder="Fabrício Duarte da Silva" maxlength="80"></label>
+                  <label class="ats-field"><span>Cargo profissional *</span><input name="role" required placeholder="QA Automation Engineer / Senior Test Analyst" maxlength="70"></label>
+                  <label class="ats-field"><span>E-mail profissional *</span><input name="email" type="email" required placeholder="voce@email.com" maxlength="80"></label>
+                  <label class="ats-field"><span>Telefone / WhatsApp</span><input name="phone" placeholder="(61) 98426-0515" maxlength="25"></label>
+                  <label class="ats-field"><span>Localização (Cidade - UF)</span><input name="location" placeholder="Brasília - DF" maxlength="40"></label>
+                  <label class="ats-field"><span>LinkedIn (URL)</span><input name="linkedin" type="url" placeholder="https://linkedin.com/in/seu-perfil" maxlength="120"></label>
+                  <label class="ats-field ats-field--full"><span>GitHub / Portfólio (URL)</span><input name="portfolio" type="url" placeholder="https://github.com/bioadsl" maxlength="120"></label>
+                </div>
+              </div>
+
+              <!-- Step 2: Summary -->
+              <div class="ats-step__panel" data-step-panel="1" hidden>
+                <h3 class="ats-step__title">📝 Resumo Profissional / Executive Summary</h3>
+                <p class="ats-step__hint">Escreva 3–5 frases de alto impacto. Palavras-chave de cargo e setores (QA, Automação, Selenium, DevOps, Financeiro, Telecom) garantem match com os scanners de IA.</p>
+                <label class="ats-field ats-field--full"><span>Resumo profissional *</span>
+                  <textarea name="summary" required rows="7" maxlength="750" placeholder="Analista de Testes Sênior / QA Automation Engineer com X anos de experiência em automação de testes Web/Mobile, validação de APIs REST e cultura Shift-Left em projetos de missão crítica dos setores financeiro e de segurança pública..."></textarea>
+                </label>
+                <small class="ats-counter"><span id="summaryCount">0</span>/750 caracteres</small>
+              </div>
+
+              <!-- Step 3: Skills -->
+              <div class="ats-step__panel" data-step-panel="2" hidden>
+                <h3 class="ats-step__title">🧩 Matriz de Habilidades</h3>
+                <p class="ats-step__hint">Separe as competências por vírgula. Quanto mais palavras-chave do anúncio de vaga aqui, maior a pontuação ATS (ex: Selenium, Cypress, Postman, Java, Python, SQL, Scrum, CI/CD).</p>
+                <label class="ats-field ats-field--full"><span>Linguagens & Tecnologias *</span>
+                  <textarea name="skills" required rows="3" maxlength="600" placeholder="Java, Python, JavaScript, Ruby, SQL, COBOL, HTML, CSS, TypeScript"></textarea>
+                </label>
+                <label class="ats-field ats-field--full"><span>Frameworks de Automação</span>
+                  <textarea name="frameworks" rows="3" maxlength="600" placeholder="Selenium WebDriver, Cypress, Playwright, Katalon Studio, Robot Framework, Cucumber, JUnit, Behave, Capybara, RestAssured"></textarea>
+                </label>
+                <label class="ats-field ats-field--full"><span>Ferramentas & Metodologias</span>
+                  <textarea name="tools" rows="3" maxlength="600" placeholder="Postman, Newman, Swagger, JMeter, Jenkins, Git, Jira, TestLink, QASE, SonarQube, AWS, Scrum, Kanban, Shift-Left, ISTQB"></textarea>
+                </label>
+              </div>
+
+              <!-- Step 4: Experience -->
+              <div class="ats-step__panel" data-step-panel="3" hidden>
+                <div class="ats-step__header-row">
+                  <h3 class="ats-step__title">💼 Experiência Profissional</h3>
+                  <button class="btn btn--ghost btn--sm" type="button" id="atsAddExpBtn">+ Adicionar cargo</button>
+                </div>
+                <p class="ats-step__hint">Mínimo recomendado: <strong>3 cargos recentes</strong>. Use verbos no passado (implementei, liderei, reduzi, otimizei) e números (%, R$, QTD) para cada conquista — IA recrutadoras adoram impacto mensurável.</p>
+                <div id="atsExpList"></div>
+              </div>
+
+              <!-- Step 5: Education -->
+              <div class="ats-step__panel" data-step-panel="4" hidden>
+                <div class="ats-step__header-row">
+                  <h3 class="ats-step__title">🎓 Formação Acadêmica</h3>
+                  <button class="btn btn--ghost btn--sm" type="button" id="atsAddEduBtn">+ Adicionar curso</button>
+                </div>
+                <div id="atsEduList"></div>
+              </div>
+
+              <!-- Step 6: Certifications -->
+              <div class="ats-step__panel" data-step-panel="5" hidden>
+                <div class="ats-step__header-row">
+                  <h3 class="ats-step__title">🏆 Certificações e Cursos</h3>
+                  <button class="btn btn--ghost btn--sm" type="button" id="atsAddCertBtn">+ Adicionar certificação</button>
+                </div>
+                <div id="atsCertList"></div>
+              </div>
+
+              <!-- Stepper navigation -->
+              <div class="ats-form__nav">
+                <button type="button" class="btn btn--ghost" id="atsPrevBtn" disabled>← Anterior</button>
+                <button type="button" class="btn btn--primary" id="atsNextBtn">Próximo →</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- RIGHT: Live ATS-friendly Preview -->
+          <aside class="ats-preview" aria-label="Prévia do currículo compatível ATS">
+            <div class="ats-preview__toolbar">
+              <span class="ats-preview__tag">📄 Prévia ATS · Modo texto-indexável</span>
+            </div>
+            <div class="ats-preview__paper" id="atsPreviewPaper" data-role="cv-exportable">
+              <header class="cv__header">
+                <h1 class="cv__name" id="cvName">NOME COMPLETO</h1>
+                <p class="cv__role" id="cvRole">Cargo Profissional</p>
+                <div class="cv__contact" id="cvContact"></div>
+              </header>
+              <section class="cv__section">
+                <h2>RESUMO PROFISSIONAL</h2>
+                <p id="cvSummary" class="cv__empty">Seu resumo executivo aparecerá aqui. Mínimo recomendado: 250 caracteres com palavras-chave relevantes.</p>
+              </section>
+              <section class="cv__section">
+                <h2>HABILIDADES</h2>
+                <div id="cvSkills" class="cv__empty">Java · Python · SQL · JavaScript · Selenium · Postman · Cypress · Jenkins · Jira · Scrum</div>
+              </section>
+              <section class="cv__section">
+                <h2>EXPERIÊNCIA PROFISSIONAL</h2>
+                <div id="cvExp" class="cv__empty">Exemplo:<br><strong>EMPRESA</strong> — Cargo · Jan/2023 – Atual · Cidade - UF<br>• Implementei framework de automação reduzindo tempo de regressão em 60%.<br>• Liderava equipe de 3 QAs e integração CI/CD.</div>
+              </section>
+              <section class="cv__section">
+                <h2>FORMAÇÃO ACADÊMICA</h2>
+                <div id="cvEdu" class="cv__empty"><strong>INSTITUIÇÃO</strong> — Graduação em Análise e Desenvolvimento de Sistemas · 2015 – 2018</div>
+              </section>
+              <section class="cv__section">
+                <h2>CERTIFICAÇÕES</h2>
+                <div id="cvCerts" class="cv__empty">ISTQB CTFL (BSTQB) · 2019 · <strong>COBIT 5 Foundation (ISACA)</strong> · 2021</div>
+              </section>
+            </div>
+          </aside>
         </div>
       </div>
     </section>

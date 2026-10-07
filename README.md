@@ -339,6 +339,70 @@ Acesse o link que aparecer no terminal → **Open Pull Request**.
 
 ---
 
+## 🛠️ ATS Resume Builder · Gerador & Scanner Profissional
+
+Ferramenta **integrada nativa no site** (sem dependências, sem plugins extras) acessível pela navegação principal em **📝 ATS Builder** ou rolando até a última seção. Desenvolvida para se alinhar aos padrões **Workday, SuccessFactors, Greenhouse, Lumesse, Taleo e Ashby** — os ATSs mais usados por recrutadoras de tecnologia em 2026.
+
+### ✨ Funcionalidades
+
+| # | Módulo | Descrição |
+|---|---|---|
+| 1 | 🧭 **Formulário guiado em 6 etapas** | Dados Pessoais → Resumo → Habilidades → Experiência → Formação → Certificações |
+| 2 | 👁️ **Live Preview em tempo real** | Painel lateral com currículo formatado em papel A4/Carta com fonte Helvetica (100% ATS-friendly) |
+| 3 | 🎯 **Validador 15 regras (0–100 pts)** | Analisa compatibilidade enquanto você preenche e dá feedback por item |
+| 4 | 💾 **Auto-salva no navegador** | Seções editadas são salvas em `localStorage` (não perde dados ao recarregar) |
+| 5 | ⚡ **Modo "Auto-preencher Demo"** | Popula todos os campos com seus dados profissionais (Fabrício Duarte) em 1 clique |
+| 6 | 📄 **Exporta em PDF ATS-Friendly** | Abre a impressão nativa do navegador com `@media print` customizado (100% texto indexável) |
+
+### 🎯 15 Regras do Validador (Padrão IA Recrutadoras)
+
+| Peso | Regra | Por quê importa |
+|---|---|---|
+| 🔴 2 | Nome completo detectável | ATS extrai o nome na 1ª linha |
+| 🔴 2 | Cargo profissional definido | Deve casar com títulos das vagas |
+| 🔴 2 | E-mail profissional válido | Sem Hotmail/Yahoo/Bol para vagas sênior |
+| 🟡 1 | Telefone / WhatsApp | Contato direto para triagem |
+| 🟡 1 | LinkedIn com /in/ customizado | Workday puxa match automático do perfil |
+| 🔴 3 | Resumo ≥ 250 caracteres | Principal fonte de match keywords |
+| 🔴 3 | Keywords QA: 8+/11 | Selenium, Cypress, Playwright, API, Jenkins, SQL, Cucumber/BDD, CI/CD, Jira, Scrum |
+| 🔴 2 | Habilidades detalhadas | Ranqueamento por frequência de keywords |
+| 🔴 3 | ≥ 3 cargos recentes | Valida empregabilidade e progressão |
+| 🔴 3 | Resultados mensuráveis (%, R$, quantidade) | IA recrutadoras priorizam impacto numérico |
+| 🟡 2 | ≥ 2 bullets por cargo | Regra CAR (Contexto → Ação → Resultado) |
+| 🔴 2 | Formação acadêmica | Workday exige nível mínimo para o cargo |
+| 🟡 1 | ≥ 2 certificações listadas | ISTQB / AWS / Scrum são diferenciais de QA |
+| 🔴 2 | Sem caracteres especiais no cabeçalho | Evita emojis/ícones que quebram parser dos ATS |
+| 🟡 2 | Pronto para exportar PDF | Dica de nome de arquivo correto |
+
+### 🚀 Como usar o ATS Builder (qualquer usuário, após clonar o repositório)
+
+1. Abra o site localmente (`python -m http.server 8080` ou Laragon/XAMPP)
+2. Clique no menu **📝 ATS Builder**
+3. Opcional: clique em **Auto-preencher demo** para ver seu currículo já carregado
+4. Preencha os 6 passos (o validador pontua em tempo real e dá sugestões)
+5. Quando pontuação ≥ 85: clique em **Exportar PDF ATS**
+6. Na janela de impressão do navegador:
+   - **Destino:** `Salvar como PDF`
+   - **Papel:** Carta (Letter) ou A4
+   - **Cabeçalhos e rodapés:** `❌ Desmarcado`
+   - **Gráficos de fundo:** `❌ Desmarcado`
+   - **Margens:** `Padrão` ou `Mínimo`
+7. Salve o arquivo no formato: `FABRICIO-DUARTE-QA-AUTOMATION-ENGINEER-2026.pdf`
+8. Envie o CV — agora ele é **100% indexável e compatível com os principais ATS do mercado**.
+
+### 🔄 Atualizando os dados de demonstração
+Se você quiser substituir os dados de exemplo do botão **Auto-preencher demo**, edite a função `fillDemoData()` em `script.js` dentro do bloco `ATS Resume Builder Module`. Os dados ficam em formato objeto JS simples — é só editar os textos e salvar.
+
+### ⚠️ Limitações conhecidas (e soluções)
+
+| Limitação | Solução |
+|---|---|
+| Não exporta `.docx` nativamente | Abra o PDF gerado no **Microsoft Word 2016+** → Arquivo → Abrir → Salvar como `.docx`. O Word converte 100% corretamente por ser texto puro. |
+| Não tem scanner OCR para PDFs de outras pessoas | Use a função `generate_cv_pdf.py` em Python (já inclusa no repo) que tem scanner completo com OCR via `pypdf`. |
+| Dados salvos em um computador não vão para outro | Botão **Auto-preencher demo** + seus ajustes rápidos resolvem em 30s. Para persistência multi-dispositivo, basta exportar/importar como JSON via `localStorage` (implementação futura). |
+
+---
+
 ## 📄 Changelog
 
 ### [1.0.0] — 2026-10-07
@@ -349,7 +413,11 @@ Acesse o link que aparecer no terminal → **Open Pull Request**.
 - 🗂️ Portfólio com 9 projetos + 5 badges CI/CD
 - 🎓 Formação, certificações e rodapé
 - 📄 `curriculo.pdf` ATS 100 pontos + scanner + 20 testes
+- 🛠️ **ATS Resume Builder** integrado (formulário 6 etapas + validador 15 regras + live preview + exportar PDF)
+- 📱 **Clique do telefone → WhatsApp** (API wa.me com mensagem pronta para recrutadores)
 - 🚀 Publicação via GitHub Pages
+
+
 
 ---
 
