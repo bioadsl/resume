@@ -266,27 +266,222 @@
   function renderExperience(experience) {
     if (!els.timeline || !Array.isArray(experience)) return;
     els.timeline.innerHTML = '';
+    const accordionIds = [];
+    const firstOpenJob = 0;
 
-    experience.forEach(function (job) {
+    experience.forEach(function (job, idx) {
       const item = document.createElement('div');
       item.className = 'timeline__item';
 
-      const highlightsHtml = (job.highlights || []).map(function (h) {
+      const jobId = 'exp-' + (idx + 1);
+      const panelId = jobId + '-panel';
+      const headerId = jobId + '-header';
+      const initialOpen = idx === firstOpenJob;
+      accordionIds.push(jobId);
+
+      const highlights = job.highlights || [];
+      const highlightsCount = highlights.length;
+      const highlightsHtml = highlights.map(function (h) {
         return '<li>' + escapeHtml(h) + '</li>';
       }).join('');
 
+      const summaryText = highlightsCount > 0
+        ? highlightsCount + ' realizaç' + (highlightsCount === 1 ? 'ão' : 'ões') + ' de destaque'
+        : 'Conteúdo do cargo';
+
       item.innerHTML =
         '<div class="timeline__dot"></div>' +
-        '<div class="timeline__card">' +
+        '<div class="timeline__card timeline__card--accordion">' +
           '<span class="timeline__period">' + escapeHtml(job.period || '') + '</span>' +
           '<h3 class="timeline__company">' + escapeHtml(job.company || '') + '</h3>' +
           '<p class="timeline__position">' + escapeHtml(job.position || '') + '</p>' +
           (job.location ? '<p class="timeline__location">📍 ' + escapeHtml(job.location) + '</p>' : '') +
-          '<ul class="timeline__highlights">' + highlightsHtml + '</ul>' +
+          '<div class="exp-accordion" data-exp-accordion data-accordion-id="' + escapeAttr(jobId) + '" data-sibling-group="experience-timeline">' +
+            '<h4 class="exp-accordion__heading" style="margin-top:0.6rem;">' +
+              '<button type="button" id="' + escapeAttr(headerId) + '" class="exp-accordion__trigger" ' +
+                'aria-expanded="' + (initialOpen ? 'true' : 'false') + '" ' +
+                'aria-controls="' + escapeAttr(panelId) + '" ' +
+                'data-accordion-index="' + idx + '"' +
+              '>' +
+                '<span class="exp-accordion__trigger-left">' +
+                  '<span class="exp-accordion__title">🔬 Realizações &amp; Entregáveis</span>' +
+                  '<span class="exp-accordion__subtitle">• ' + escapeHtml(summaryText) + '</span>' +
+                '</span>' +
+                '<span class="exp-accordion__chev" aria-hidden="true">' +
+                  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>' +
+                '</span>' +
+              '</button>' +
+            '</h4>' +
+            '<div id="' + escapeAttr(panelId) + '" ' +
+              'class="exp-accordion__panel" ' +
+              'role="region" ' +
+              'aria-labelledby="' + escapeAttr(headerId) + '" ' +
+              (initialOpen ? 'data-open' : '') +
+              (initialOpen ? 'aria-hidden="false"' : 'aria-hidden="true"') +
+            '>' +
+              '<div class="exp-accordion__content">' +
+                (highlightsCount > 0
+                  ? '<ul class="timeline__highlights timeline__highlights--accordion">' + highlightsHtml + '</ul>'
+                  : '<p class="timeline__empty">Nenhuma realização cadastrada para este cargo.</p>') +
+              '</div>' +
+            '</div>' +
+          '</div>' +
         '</div>';
 
       els.timeline.appendChild(item);
     });
+
+    mountExperienceAccordions();
+  }
+
+  function mountExperienceAccordions() {
+    const root = els.timeline;
+    if (!root) return;
+
+    const triggers = Array.prototype.slice.call(root.querySelectorAll('[data-exp-accordion] .exp-accordion__trigger'));
+    if (triggers.length === 0) return;
+
+    const isSingle = true;
+    const ChevRotationOpen = 180;
+    const ChevRotationClosed = 0;
+
+    function setPanelOpen(trigger, panel, open, animate) {
+      const expanded = String(open === true);
+      trigger.setAttribute('aria-expanded', expanded);
+      panel.setAttribute('aria-hidden', String(open !== true));
+
+      const chev = trigger.querySelector('.exp-accordion__chev svg');
+      if (chev) {
+        chev.style.transition = animate ? 'transform 0.3s cubic-bezier(0.4,0,0.2,1)' : 'none';
+        chev.style.transform = 'rotate(' + (open ? ChevRotationOpen : ChevRotationClosed) + 'deg)';
+      }
+
+      const content = panel.querySelector('.exp-accordion__content');
+      if (!content) return;
+
+      if (open) {
+        panel.setAttribute('data-open', '');
+        const h = content.scrollHeight;
+        if (!animate) {
+          panel.style.height = 'auto';
+          panel.style.overflow = 'visible';
+          requestAnimationFrame(function () { panel.style.height = ''; });
+          return;
+        }
+        panel.style.overflow = 'hidden';
+        panel.style.height = '0px';
+        requestAnimationFrame(function () {
+          const finalH = content.scrollHeight;
+          panel.style.transition = 'height 0.32s cubic-bezier(0.4,0,0.2,1)';
+          panel.style.height = finalH + 'px';
+          const onEnd = function (e) {
+            if (e && e.propertyName !== 'height') return;
+            if (!panel.hasAttribute('data-open')) return;
+            panel.style.transition = '';
+            panel.style.height = 'auto';
+            panel.style.overflow = 'visible';
+            panel.removeEventListener('transitionend', onEnd);
+          };
+          panel.addEventListener('transitionend', onEnd, { once: true });
+          setTimeout(function () {
+            if (panel.hasAttribute('data-open') && panel.style.height !== 'auto') {
+              onEnd();
+            }
+          }, 400);
+        });
+      } else {
+        panel.removeAttribute('data-open');
+        if (!animate) {
+          panel.style.height = '';
+          panel.style.overflow = '';
+          panel.style.transition = '';
+          return;
+        }
+        const h = content.scrollHeight;
+        panel.style.overflow = 'hidden';
+        panel.style.transition = '';
+        panel.style.height = h + 'px';
+        requestAnimationFrame(function () {
+          panel.style.transition = 'height 0.3s cubic-bezier(0.4,0,0.2,1)';
+          panel.style.height = '0px';
+          const onEnd = function (e) {
+            if (e && e.propertyName !== 'height') return;
+            if (panel.hasAttribute('data-open')) return;
+            panel.style.transition = '';
+            panel.style.height = '';
+            panel.style.overflow = '';
+            panel.removeEventListener('transitionend', onEnd);
+          };
+          panel.addEventListener('transitionend', onEnd, { once: true });
+          setTimeout(function () {
+            if (!panel.hasAttribute('data-open') && panel.style.height !== '') {
+              onEnd();
+            }
+          }, 400);
+        });
+      }
+    }
+
+    triggers.forEach(function (trigger, i) {
+      const panelId = trigger.getAttribute('aria-controls');
+      const panel = panelId ? document.getElementById(panelId) : null;
+      if (!panel) return;
+
+      const initialOpen = trigger.getAttribute('aria-expanded') === 'true';
+      if (initialOpen) {
+        setPanelOpen(trigger, panel, true, false);
+      } else {
+        setPanelOpen(trigger, panel, false, false);
+      }
+
+      trigger.addEventListener('click', function () {
+        const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+        if (isSingle) {
+          triggers.forEach(function (otherTrigger, j) {
+            if (j === i) return;
+            const otherPanel = document.getElementById(otherTrigger.getAttribute('aria-controls'));
+            if (!otherPanel) return;
+            const otherOpen = otherTrigger.getAttribute('aria-expanded') === 'true';
+            if (otherOpen) setPanelOpen(otherTrigger, otherPanel, false, true);
+          });
+        }
+        setPanelOpen(trigger, panel, !isOpen, true);
+      });
+
+      trigger.addEventListener('keydown', function (e) {
+        const key = e.key;
+        if (key === 'Enter' || key === ' ' || key === 'Spacebar') {
+          e.preventDefault();
+          trigger.click();
+          return;
+        }
+        if (isSingle && (key === 'ArrowDown' || key === 'ArrowUp' || key === 'Home' || key === 'End')) {
+          e.preventDefault();
+          let nextIdx = i;
+          if (key === 'ArrowDown') nextIdx = (i + 1) % triggers.length;
+          else if (key === 'ArrowUp') nextIdx = (i - 1 + triggers.length) % triggers.length;
+          else if (key === 'Home') nextIdx = 0;
+          else if (key === 'End') nextIdx = triggers.length - 1;
+          triggers[nextIdx].focus();
+        }
+      });
+    });
+
+    if ('ResizeObserver' in window) {
+      triggers.forEach(function (trigger) {
+        const panelId = trigger.getAttribute('aria-controls');
+        const panel = panelId ? document.getElementById(panelId) : null;
+        if (!panel) return;
+        const content = panel.querySelector('.exp-accordion__content');
+        if (!content) return;
+        const ro = new ResizeObserver(function () {
+          if (panel.hasAttribute('data-open') && panel.style.height === 'auto') {
+            // já está auto, nada a fazer.
+          }
+        });
+        ro.observe(content);
+      });
+    }
   }
 
   function renderProjects(projects) {
